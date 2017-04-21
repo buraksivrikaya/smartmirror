@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "electron": "^1.5.1",
-    "jquery": "^3.1.0"
+    "electron": "1.5.1",
+    "jquery": "3.1.0"
   }
 }

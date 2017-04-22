@@ -1,4 +1,4 @@
-const {app, BrowserWindow} = require("electron");
+/*const {app, BrowserWindow} = require("electron");
 const path = require("path");
 const url = require("url");
 
@@ -52,4 +52,57 @@ app.on("activate", () => {
 });
 
 // In this file you can include the rest of your app"s specific main process
-// code. You can also put them in separate files and require them here.
+// code. You can also put them in separate files and require them here.*/
+
+/******************************************************************
+*                                                                 *
+*                     LOCALHOST OPERATIONS                        *
+*                                                                 *
+*****************************************************************/
+
+const express = require("express");
+const google = require("googleapis");
+
+var OAuth2 = google.auth.OAuth2;
+
+var oauth2Client = new OAuth2(
+  "76077925517-8fhrcebbtmthkssssmb7u5l4jgmr78pg.apps.googleusercontent.com",
+  "JYsqVAFo8-9HNFASG7pMt6lQ",
+  "http://localhost:3000/oauthcallback"
+);
+
+// generate a url that asks permissions for Google+ and Google Calendar scopes
+var scopes = [
+  "https://www.googleapis.com/auth/gmail.readonly"
+];
+
+var redirectUrl = oauth2Client.generateAuthUrl({
+  // "online" (default) or "offline" (gets refresh_token)
+  access_type: "offline",
+
+  // If you only need one scope you can pass it as a string
+  scope: scopes,
+
+  // Optional property that passes state parameters to redirect URI
+  // state: { foo: "bar" }
+});
+
+var host = express();
+
+host.get("/", function(req, res) {
+  res.redirect(redirectUrl);
+});
+
+host.get("/oauthcallback", function(req, res) {
+  code = req.query.code;
+  oauth2Client.getToken(code, function (err, tokens) {
+    // Now tokens contains an access_token and an optional refresh_token. Save them.
+    if (!err) {
+      oauth2Client.setCredentials(tokens);
+    }
+
+    console.log(oauth2Client);
+  });
+});
+
+host.listen(3000);

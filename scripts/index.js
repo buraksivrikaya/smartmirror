@@ -16,12 +16,10 @@ $(document).ready(function() {
 			gest.stop();
 
 		    setTimeout(function() {
-		    	FaceUtilAddon.onDetected(80, function(msg) {
-			        if(msg == "can") {
-			        	console.log("welcome can");
-			        }
+		    	FaceUtilAddon.onDetected(80, function(who) {
+			        console.log("welcome " + who);
 			        FaceUtilAddon.stopListening();
-			        FaceUtilAddon.close();
+			        //FaceUtilAddon.close();
 			    });
 			    FaceUtilAddon.startListening();
 		    }, 500);

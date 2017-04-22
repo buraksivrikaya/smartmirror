@@ -61,73 +61,39 @@ app.on("activate", () => {
 *****************************************************************/
 
 const express = require("express");
-const google = require("googleapis");
+const GmailAuth = require("./libs/GmailAuth.js");
+const GmailService = require("./libs/GmailService.js");
 
-var OAuth2 = google.auth.OAuth2;
-
-var oauth2Client = new OAuth2(
+var auth = new GmailAuth(
   "76077925517-8fhrcebbtmthkssssmb7u5l4jgmr78pg.apps.googleusercontent.com",
   "JYsqVAFo8-9HNFASG7pMt6lQ",
-  "http://localhost:3000/oauthcallback"
-);
-
-// generate a url that asks permissions for Google+ and Google Calendar scopes
-var scopes = [
+  "http://localhost:3000/oauthcallback",
   "https://www.googleapis.com/auth/gmail.readonly"
-];
-
-var redirectUrl = oauth2Client.generateAuthUrl({
-  // "online" (default) or "offline" (gets refresh_token)
-  access_type: "offline",
-
-  // If you only need one scope you can pass it as a string
-  scope: scopes,
-
-  // Optional property that passes state parameters to redirect URI
-  // state: { foo: "bar" }
-});
+  );
 
 var host = express();
 
-host.get("/", function(req, res) {
-  res.redirect(redirectUrl);
+host.get("/authorize", function(req, res) {
+  res.redirect(auth.generateAuthUrl());
+  //console.log(auth.generateAuthUrl());
 });
 
 host.get("/oauthcallback", function(req, res) {
-  oauth2Client.getToken(req.query.code, function (err, tokens) {
-    if (!err) {
-      oauth2Client.setCredentials(tokens);
-    } else {
-      console.log(err);
+  auth.authorize(req.query.code);
+});
+
+host.get("/listLastXMails", function(req, res) {
+  service = new GmailService(auth.getAuth());
+  service.listLastXMailId(1, function(msgs) {
+    console.log(msgs)
+    console.log(msgs.length);
+    for(let i=0; i < msgs.length; i++) {
+      let msg = msgs[i];
+      service.getEmailById(msg.id, function(mail) {
+        console.log(mail);
+      });
     }
   });
 });
-
-host.get("/foo", function(req, res) {
-  getMessages('me', oauth2Client);
-  //getMessage('me', "15b967c1193cfcf3", oauth2Client);
-});
-
-
-function getMessages(userId, auth) {
-  var gmail = google.gmail({ auth: auth, version: 'v1' });
-
-  gmail.users.messages.list({
-    'userId': userId
-  }, function (err, result) {
-    console.log(result);
-  });
-}
-
-function getMessage(userId, messageId, auth) {
-  var gmail = google.gmail({ auth: auth, version: 'v1' });
-
-  gmail.users.messages.get({
-    'userId': userId,
-    'id': messageId
-  }, function (err, result) {
-    console.log(result);
-  });
-}
 
 host.listen(3000);

@@ -94,15 +94,40 @@ host.get("/", function(req, res) {
 });
 
 host.get("/oauthcallback", function(req, res) {
-  code = req.query.code;
-  oauth2Client.getToken(code, function (err, tokens) {
-    // Now tokens contains an access_token and an optional refresh_token. Save them.
+  oauth2Client.getToken(req.query.code, function (err, tokens) {
     if (!err) {
       oauth2Client.setCredentials(tokens);
+    } else {
+      console.log(err);
     }
-
-    console.log(oauth2Client);
   });
 });
+
+host.get("/foo", function(req, res) {
+  getMessages('me', oauth2Client);
+  //getMessage('me', "15b967c1193cfcf3", oauth2Client);
+});
+
+
+function getMessages(userId, auth) {
+  var gmail = google.gmail({ auth: auth, version: 'v1' });
+
+  gmail.users.messages.list({
+    'userId': userId
+  }, function (err, result) {
+    console.log(result);
+  });
+}
+
+function getMessage(userId, messageId, auth) {
+  var gmail = google.gmail({ auth: auth, version: 'v1' });
+
+  gmail.users.messages.get({
+    'userId': userId,
+    'id': messageId
+  }, function (err, result) {
+    console.log(result);
+  });
+}
 
 host.listen(3000);

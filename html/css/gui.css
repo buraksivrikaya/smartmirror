@@ -1,0 +1,61 @@
+.clearFloat {
+  clear: both;			
+}
+body{
+	background: black;
+	color: white;
+	padding: 20px;
+}
+#notificationArea{
+	width: 100%;
+	height: auto;
+	font-size: 75%;
+	text-align: right;
+}
+
+.notificationElement{
+	display: inline-block;
+	margin: auto;
+	margin-left: 10px;
+}
+
+#navigationArea{
+	margin: auto;
+	margin-top: 30px;
+	width: 100%;
+	height: auto;
+	font-size: 125%;
+	text-align: center;
+}
+
+.navigationElement{
+	display: inline-block;
+	margin: 0px 0px 0px 20px;
+}
+#seperator{
+	margin-top:5px;
+	margin-left: 20px;
+	margin-right: 20px;
+}
+
+iframe #agenda *{
+	background : black;
+	color: white;
+	border: none;
+}
+
+.highlighted {
+	font-size: 150%;
+}
+
+.contentAreaElement{
+	border-style: solid;
+    border-width: 5px;
+    border-color: white;
+
+	margin-top:5px;
+	margin-left: 20px;
+	margin-right: 20px;
+	height: 300px;
+	
+}

@@ -7,11 +7,9 @@ var navigationElements = {
 };
 
 var getMails = function(){
-	var konular
-	var icerikler
-	var template = '<li class="list-group-item">burak sivirkaya </li>\
-  <li class="list-group-item">can ünsal <span>konu konu konu</span></li> \
-  <li class="list-group-item">erdem yazan </span></li>' ;
+	var template = '<li class="list-group-item mail" data-mailindex=0><span class="mailFrom">burak sivirkaya</span><span class="mailSubject">konu konu konu</span><span class="mailDate">01.01.2017</span></li>\
+  <li class="list-group-item mail" data-mailindex=1><span class="mailFrom">can ünsal <span class="mailSubject">konu konu konu</span><span class="mailDate">01.01.2017</span></li> \
+  <li class="list-group-item mail" data-mailindex=2><span class="mailFrom">erdem yazan  <span class="mailSubject">konu konu konu</span><span class="mailDate">01.01.2017</span></li>' ;
 	return template;
 };
 var contents = {
@@ -28,8 +26,7 @@ var contents = {
       </div>',
 
       mails : '<div class="contentAreaElement" hidden>\
-                 <h1>mailler</h1>\
-          		 <ul class="list-group">'+getMails()+'\
+          		 <ul id="mailList" class="list-group">'+getMails()+'\
 				 </ul>\
      		 </div>',
 

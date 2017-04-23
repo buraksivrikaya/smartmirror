@@ -16,15 +16,13 @@ $(document).ready(function() {
 			gest.stop();
 
 		    setTimeout(function() {
-		    	FaceUtilAddon.onDetected(80, function(msg) {
-			        if(msg == "can") {
-			        	console.log("welcome can");
-			        }
-			        FaceUtilAddon.stopListening();
-			        FaceUtilAddon.close();
+		    	FaceUtilAddon.onDetected(80, function(msg) {	// buradaki sayı 100-x = emin olma yüzdesi ne kadar düşük olursa o kadar emin olduğu zaman çağırır
+			        console.log(msg);
+			        //FaceUtilAddon.stopListening();
+			        //bunu kaldırırsan surekli dinler
 			    });
 			    FaceUtilAddon.startListening();
-		    }, 500);
+		    }, 100);
 
 		}
 	});

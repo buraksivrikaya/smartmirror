@@ -2,7 +2,7 @@ $(document).ready(function() {
 
 	var $navigationElements = $('.navigationElement');
 	var index = 0;
-	var faceDetected = 1;
+	var faceDetected = 0;
 	var onMails = 0;
 	var onMailList = 0;
 	const FaceUtilAddon = require('../build/Release/FaceUtilAddon');

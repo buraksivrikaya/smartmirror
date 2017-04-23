@@ -53,3 +53,47 @@ app.on("activate", () => {
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
+
+/******************************************************************
+*                                                                 *
+*                     LOCALHOST OPERATIONS                        *
+*                                                                 *
+*****************************************************************/
+
+const express = require("express");
+const GmailAuth = require("./libs/GmailAuth.js");
+const GmailService = require("./libs/GmailService.js");
+
+var auth = new GmailAuth(
+  "76077925517-8fhrcebbtmthkssssmb7u5l4jgmr78pg.apps.googleusercontent.com",
+  "JYsqVAFo8-9HNFASG7pMt6lQ",
+  "http://localhost:3000/oauthcallback",
+  "https://www.googleapis.com/auth/gmail.readonly"
+  );
+
+var host = express();
+
+host.get("/authorize", function(req, res) {
+  res.redirect(auth.generateAuthUrl());
+  //console.log(auth.generateAuthUrl());
+});
+
+host.get("/oauthcallback", function(req, res) {
+  auth.authorize(req.query.code);
+});
+
+host.get("/listLastXMails", function(req, res) {
+  service = new GmailService(auth.getAuth());
+  service.listLastXMailId(1, function(msgs) {
+    console.log(msgs)
+    console.log(msgs.length);
+    for(let i=0; i < msgs.length; i++) {
+      let msg = msgs[i];
+      service.getEmailById(msg.id, function(mail) {
+        console.log(mail);
+      });
+    }
+  });
+});
+
+host.listen(3000);

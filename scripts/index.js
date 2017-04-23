@@ -16,10 +16,10 @@ $(document).ready(function() {
 			gest.stop();
 
 		    setTimeout(function() {
-		    	FaceUtilAddon.onDetected(80, function(msg) {	// buradaki sayı 100-x = emin olma yüzdesi ne kadar düşük olursa o kadar emin olduğu zaman çağırır
-			        console.log(msg);
-			        //FaceUtilAddon.stopListening();
-			        //bunu kaldırırsan surekli dinler
+		    	FaceUtilAddon.onDetected(80, function(who) {
+			        console.log("welcome " + who);
+			        FaceUtilAddon.stopListening();
+			        //FaceUtilAddon.close();
 			    });
 			    FaceUtilAddon.startListening();
 		    }, 100);

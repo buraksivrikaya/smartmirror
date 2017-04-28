@@ -77,3 +77,13 @@ iframe #agenda *{
 	font-size: 100%;
 	font-weight: bolder;
 }
+
+#mailModal {
+	margin-top: 5%;
+	margin-right: auto;
+	margin-left: auto;
+}
+#mailModal *{
+	background:black;
+	border: none;
+}

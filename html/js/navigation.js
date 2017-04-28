@@ -5,6 +5,7 @@ $(document).ready(function() {
 	var faceDetected = 0;
 	var onMails = 0;
 	var onMailList = 0;
+	var mailReading = 0;
 	const FaceUtilAddon = require('../build/Release/FaceUtilAddon');
 
 	FaceUtilAddon.loadFaceDetector("data/lbpcascade_frontalface.xml");
@@ -14,7 +15,7 @@ $(document).ready(function() {
 	FaceUtilAddon.loadFaceModel("data/trained.data");
 	$($('.navigationElement')[index]).addClass('highlighted');
 
-	$('#contentArea').append(getHtml($($('.navigationElement')[index]).data("type")));
+	$('#contentArea').append(getNavigationHtml($($('.navigationElement')[index]).data("type")));
 	$('.contentAreaElement').show();
 	gest.start();
 	console.log("gest started");
@@ -44,7 +45,7 @@ $(document).ready(function() {
 		}
 		else if(faceDetected == 1){
 			window.setTimeout(function() {
-			    if((dir == 'Right' || dir == 'Left') && onMailList != 1)  {
+			    if((dir == 'Right' || dir == 'Left') && onMailList != 1 && mailReading != 1)  {
 				    dir == 'Right' ? index++ : index --;
 				    console.log("menu");
 				    if(index >= $navigationElements.length){
@@ -57,21 +58,22 @@ $(document).ready(function() {
 
 					if($($('.navigationElement')[index]).data("type")==='mails'){
 					    	onMails = 1;
+							console.log('MAIL USTUNDE');
 					}
 				    else{
 				    	onMails = 0;
 				    }
 			    }
 		  		else if(onMails == 1 && (dir == 'Long down'|| dir == 'Down')){
-				    console.log("menu mail");
 			    	onMailList = 1;
 			    	onMails = 0;
 			    	if($('.mail').length > 0){
 			    		$($('.mail')[0]).click();
 			    	}
+						console.log('MAIL LISTESINE GIRDI');
 		    	}
-		    	else if(onMailList == 1){
-		    		console.log("mailList");
+		    	else if(onMailList == 1 && mailReading == 0){
+					console.log('MAIL LISTESINDE');
 		    		var mailCount = $('.mail').length;
 		    		console.log(mailCount);
 		    		var mailIndex = $('.selected').data('mailindex');
@@ -82,11 +84,25 @@ $(document).ready(function() {
 		    		else if(dir == 'Long up'|| dir == 'Up'){
 		    			mailIndex --;
 		    		}
+		    		else if(dir == 'Right'){
+		    			mailReading = 1;
+		    			onMailList = 0;
+						console.log('MAIL OKUYOR');
+		    		}
+
 		    		if(mailIndex < 0){
 		    			onMailList = 0;
 		    			onMails = 1;
+		    			$('.selected').removeClass('selected');
+						console.log('MAIL USTUNE GERI GIRDI');
 		    		}
 		    		$($('.mail')[mailIndex]).click();
+		    	}
+		    	else if(mailReading == 1 && dir == 'Left'){
+						console.log('MAIL OKUMADAN CIKIS YAPTI');
+		    		mailReading = 0;
+		    		onMailList = 1;
+		    		$('#mailModalCloseButton').click();
 		    	}
 			}, 1500);
 		}
@@ -96,16 +112,31 @@ $(document).ready(function() {
 	$('.navigationElement').on('click', function(){
 		$('.highlighted').removeClass('highlighted');
 		$(this).addClass('highlighted');
-		$('#contentArea').append(getHtml($(this).data("type")));
-        $($('#contentArea').children(":first")).fadeOut(250, function(){
+		$('#contentArea').append(getNavigationHtml($(this).data("type")));
+        $($('#contentArea').children(":first")).fadeOut(150, function(){
         	this.remove();
-        	$($('#contentArea').children(":last")).fadeIn(500);
+        	$($('#contentArea').children(":last")).fadeIn(150), function(){
+				if($('#contentArea').children().length > 1){
+					for(var i = -1 ; i < $('#contentArea').children().length; i++ ){
+						$($('#contentArea').children()[i]).remove();
+					}
+				}
+        	};
         });
         if($(this).data("type") == "mails"){
 			$('.mail').on('click', function(){
-				console.log("clicked");
-				$('.selected').removeClass('selected');
-				$(this).addClass('selected');
+				console.log("MAİL CLICKED");
+				if(mailReading == 1){
+					$('#mailModal .modal-title').html($('.selected .mailFrom').html());
+					$('#mailModal .modal-title-date').html($('.selected .mailDate').html());
+					$('#mailModal .modal-body-subject').html($('.selected .mailSubject').html());
+					$('#mailModal .modal-body-content').html($('.selected').data('mailcontent'));
+					$('#mailModal').modal('show');
+				}
+				else {
+					$('.selected').removeClass('selected');
+					$(this).addClass('selected');
+				}
 			});
         }
 	});

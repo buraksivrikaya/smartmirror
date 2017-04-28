@@ -4,15 +4,19 @@ var navigationElements = {
 	mails: 'E-Posta',
 	calendar: 'Ajanda',
 	baskabisi: 'testüğşöç'
-};
+}
+var getNavigationElements = function(){
+	return navigationElements;
+}
 
-var getMails = function(){
-	var template = '<li class="list-group-item mail" data-mailindex=0><span class="mailFrom">burak sivirkaya</span><span class="mailSubject">konu konu konu</span><span class="mailDate">01.01.2017</span></li>\
-  <li class="list-group-item mail" data-mailindex=1><span class="mailFrom">can ünsal <span class="mailSubject">konu konu konu</span><span class="mailDate">01.01.2017</span></li> \
-  <li class="list-group-item mail" data-mailindex=2><span class="mailFrom">erdem yazan  <span class="mailSubject">konu konu konu</span><span class="mailDate">01.01.2017</span></li>' ;
+var getNavigationMails = function(){
+	var template = '\
+	  <li class="list-group-item mail" data-mailindex=0 data-mailcontent="icerik 0 icerik 0 icerik 0 icerik 0 icerik 0"><span class="mailFrom">burak sivirkaya</span><span class="mailSubject">konu konu konu</span><span class="mailDate">01.01.2017</span></li>\
+	  <li class="list-group-item mail" data-mailindex=1 data-mailcontent="icerik 1 icerik 1 icerik 1 icerik 1 icerik 1"><span class="mailFrom">can ünsal      </span><span class="mailSubject">konu konu konu</span><span class="mailDate">01.01.2017</span></li> \
+	  <li class="list-group-item mail" data-mailindex=2 data-mailcontent="icerik 2 icerik 2 icerik 2 icerik 2 icerik 2"><span class="mailFrom">erdem yazan    </span><span class="mailSubject">konu konu konu</span><span class="mailDate">01.01.2017</span></li>' ;
 	return template;
 };
-var contents = {
+var navigationContents = {
 	home : '<div class="contentAreaElement" hidden>\
           <h1>What is Lorem Ipsum?</h1>\
 			Lorem Ipsum is simply dummy text of the printing and typesetting industry. \
@@ -26,7 +30,7 @@ var contents = {
       </div>',
 
       mails : '<div class="contentAreaElement" hidden>\
-          		 <ul id="mailList" class="list-group">'+getMails()+'\
+          		 <ul id="mailList" class="list-group">'+getNavigationMails()+'\
 				 </ul>\
      		 </div>',
 
@@ -35,8 +39,8 @@ var contents = {
 	  </div>'
 };
 
-var getHtml = function(dataType){
-	if(dataType === "home"){return contents.home;}
-	else if(dataType === "mails"){return contents.mails;}
-	else{return contents.underConstruction;}
+var getNavigationHtml = function(dataType){
+	if(dataType === "home"){return navigationContents.home;}
+	else if(dataType === "mails"){return navigationContents.mails;}
+	else{return navigationContents.underConstruction;}
 };

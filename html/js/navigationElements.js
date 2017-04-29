@@ -6,12 +6,8 @@ var navigationElements = {
 	baskabisi: 'testüğşöç'
 }
 
-var mailFromList = [];
-var mailDateList = [];
-var mailSubjectList = [];
-var mailContentList = [];
+var mailList = [];
 var errorMessage = 'none';
-
 var getNavigationElements = function(){
 	return navigationElements;
 };
@@ -29,17 +25,14 @@ var createNavigationMailItem = function(index, from, date, subject, content){
 };
 var getNavigationMails = function(){
 	var template = '';
-	$(mailFromList).each(function(index,value){
-		template += createNavigationMailItem(index, value, mailDateList[index], mailSubjectList[index], mailContentList[index]);
-	});
+	for(var index = 0; index < mailList.length ; index++){
+		var from = mailList[index].from.value[0].name === "" ? mailList[index].from.value[0].address : mailList[index].from.value[0].name;
+		var date = mailList[index].date.toDateString() +' '+ mailList[index].date.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1");
+		template += createNavigationMailItem(index, from , date, mailList[index].subject, mailList[index].text);
+	}
+	
 
 	return template;
-	/*var template = '\
-	  <li class="list-group-item mail" data-mailindex=0 data-mailcontent="icerik 0 icerik 0 icerik 0 icerik 0 icerik 0"><span class="mailFrom">burak sivrikaya</span><span class="mailSubject">konu konu konu</span><span class="mailDate">01.01.2017</span></li>\
-	  <li class="list-group-item mail" data-mailindex=1 data-mailcontent="icerik 1 icerik 1 icerik 1 icerik 1 icerik 1"><span class="mailFrom">can ünsal      </span><span class="mailSubject">konu konu konu</span><span class="mailDate">01.01.2017</span></li> \
-	  <li class="list-group-item mail" data-mailindex=2 data-mailcontent="icerik 2 icerik 2 icerik 2 icerik 2 icerik 2"><span class="mailFrom">erdem yazan    </span><span class="mailSubject">konu konu konu</span><span class="mailDate">01.01.2017</span></li>\
-	  '+createNavigationMailItem(3,"hasan bulut", '3-5-1212', 'tez hakkında', 'yzzzzzza dasas dasbir content var icerik 3 icerik 34 icerik 123 fnaeqw faalan filan')+'';*/
-	  
 };
 var navigationContents = {
 	home : '<div class="contentAreaElement" hidden>\
@@ -76,6 +69,8 @@ var getNavigationHtml = function(dataType){
 var Imap = require('imap'),
     inspect = require('util').inspect;
 
+var simpleParser = require("mailparser").simpleParser;
+
 var imap = new Imap({
   user: '*@gmail.com',
   password: '*',
@@ -94,8 +89,8 @@ imap.once('ready', function() {
 		if (err) throw err;
 
 		var mailEnd = 15; //Default 15 mails
-		(box.messages.total-mailEnd) < 0 ? mailEnd = 0 : mailEnd = box.messages.total-mailEnd-1;
-		var f = imap.seq.fetch(box.messages.total + ':' + mailEnd, { bodies: ['HEADER.FIELDS (FROM SUBJECT DATE)','TEXT'] });
+		(box.messages.total-mailEnd) < 0 ? mailEnd = 0 : mailEnd = box.messages.total-mailEnd+1;
+		var f = imap.seq.fetch(box.messages.total + ':' + mailEnd, { bodies: '' });
 		f.on('message', function(msg, seqno) {
 			var prefix = '(#' + seqno + ') ';
 			msg.on('body', function(stream, info) {
@@ -108,18 +103,11 @@ imap.once('ready', function() {
 				});
 
 				stream.once('end', function() {
-					if (info.which !== 'TEXT'){
-					 	mailFromList.push(Imap.parseHeader(buffer).from);
-					 	mailDateList.push(Imap.parseHeader(buffer).date);
-					 	mailSubjectList.push(Imap.parseHeader(buffer).subject);
-					}
-					else{
-						/*var text = htmlToText.fromString(buffer, {
-						    wordwrap: 130
-						});*/
-						mailContentList.push(buffer);
-						console.log(buffer);
-					}
+				    simpleParser(buffer, (err, mail)=>{
+                        if(mail.date != null){
+                        	mailList.push(mail);
+                        }
+                    });
 				});
 			});
 		});

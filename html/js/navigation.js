@@ -59,6 +59,7 @@ $(document).ready(function() {
 					if($($('.navigationElement')[index]).data("type")==='mails'){
 					    	onMails = 1;
 							console.log('MAIL USTUNDE');
+							imap.connect();
 					}
 				    else{
 				    	onMails = 0;
@@ -124,20 +125,23 @@ $(document).ready(function() {
         	};
         });
         if($(this).data("type") == "mails"){
-			$('.mail').on('click', function(){
-				console.log("MAİL CLICKED");
-				if(mailReading == 1){
-					$('#mailModal .modal-title').html($('.selected .mailFrom').html());
-					$('#mailModal .modal-title-date').html($('.selected .mailDate').html());
-					$('#mailModal .modal-body-subject').html($('.selected .mailSubject').html());
-					$('#mailModal .modal-body-content').html($('.selected').data('mailcontent'));
-					$('#mailModal').modal('show');
-				}
-				else {
-					$('.selected').removeClass('selected');
-					$(this).addClass('selected');
-				}
-			});
+        	$($('#mailList')[0]).html(getNavigationMails()).promise().done(function(){
+				$('.mail').on('click', function(){
+					console.log("MAİL CLICKED");
+					if(mailReading == 1){
+						$('#mailModal .modal-title').html($('.selected .mailFrom').html());
+						$('#mailModal .modal-title-date').html($('.selected .mailDate').html());
+						$('#mailModal .modal-body-subject').html($('.selected .mailSubject').html());
+						//$('#mailModal .modal-body-content').html($('.selected').data('mailcontent'));
+						$('#mailModal .modal-body-content').html(mailContentList[$('.selected').data('mailindex')]);
+						$('#mailModal').modal('show');
+					}
+					else {
+						$('.selected').removeClass('selected');
+						$(this).addClass('selected');
+					}
+				});
+        	});
         }
 	});
 });

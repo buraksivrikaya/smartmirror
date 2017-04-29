@@ -129,12 +129,13 @@ $(document).ready(function() {
 				$('.mail').on('click', function(){
 					console.log("MAİL CLICKED");
 					if(mailReading == 1){
-						$('#mailModal .modal-title').html($('.selected .mailFrom').html());
-						$('#mailModal .modal-title-date').html($('.selected .mailDate').html());
-						$('#mailModal .modal-body-subject').html($('.selected .mailSubject').html());
-						//$('#mailModal .modal-body-content').html($('.selected').data('mailcontent'));
-						$('#mailModal .modal-body-content').html(mailContentList[$('.selected').data('mailindex')]);
+						var indexOfMail = $('.selected').data('mailindex');
+						$('#mailModal .modal-title').html(mailList[indexOfMail].from.value[0].name);
+						$('#mailModal .modal-title-date').html(mailList[indexOfMail].date.toDateString() +' '+ mailList[indexOfMail].date.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1"));
+						$('#mailModal .modal-body-subject').html(mailList[indexOfMail].subject);
+						$('#mailModal .modal-body-content').html(mailList[indexOfMail].text);
 						$('#mailModal').modal('show');
+						console.log(mailList)
 					}
 					else {
 						$('.selected').removeClass('selected');

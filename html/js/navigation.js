@@ -6,13 +6,13 @@ $(document).ready(function() {
 	var onMails = 0;
 	var onMailList = 0;
 	var mailReading = 0;
-	const FaceUtilAddon = require('../../build/Release/FaceUtilAddon');
+	const FaceUtilAddon = require('../build/Release/FaceUtilAddon');
 
-	FaceUtilAddon.loadFaceDetector("backend/data/lbpcascade_frontalface.xml");
+	FaceUtilAddon.loadFaceDetector("data/lbpcascade_frontalface.xml");
 
-	FaceUtilAddon.trainFaceModel("backend/data/csv.csv");
-    FaceUtilAddon.saveFaceModel("backend/data/trained.data");
-	FaceUtilAddon.loadFaceModel("backend/data/trained.data");
+	FaceUtilAddon.trainFaceModel("data/csv.csv");
+    FaceUtilAddon.saveFaceModel("data/trained.data");
+	FaceUtilAddon.loadFaceModel("data/trained.data");
 	$($('.navigationElement')[index]).addClass('highlighted');
 
 	$('#contentArea').append(getNavigationHtml($($('.navigationElement')[index]).data("type")));

@@ -60,7 +60,7 @@ app.on("activate", () => {
 *                     LOCALHOST OPERATIONS                        *
 *                                                                 *
 *****************************************************************/
-/*
+
 const express = require("express");
 const GmailAuth = require("./libs/GmailAuth.js");
 const GmailService = require("./libs/GmailService.js");
@@ -97,4 +97,4 @@ host.get("/listLastXMails", function(req, res) {
   });
 });
 
-host.listen(3000);*/
+host.listen(3000);

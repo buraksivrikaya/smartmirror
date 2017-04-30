@@ -18,8 +18,7 @@ var User = (function () {
         fs.writeFileSync(uri, JSON.stringify(this));
     };
     User.loadFrom = function (uri) {
-        var file = fs.readFileSync(uri);
-        var json = JSON.parse(file);
+        var json = JSON.parse(fs.readFileSync(uri));
         var user = new User(json["id"], json["name"]);
         if ("gmailAuth" in json) {
             var auth = new Oauth2(json["gmailAuth"]["clientId_"], json["gmailAuth"]["clientSecret_"], json["gmailAuth"]["redirectUri_"]);
@@ -31,3 +30,4 @@ var User = (function () {
     return User;
 }());
 exports.User = User;
+module.exports = User;

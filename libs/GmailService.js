@@ -74,3 +74,4 @@ var GmailService = (function () {
     return GmailService;
 }());
 exports.GmailService = GmailService;
+module.exports = GmailService;

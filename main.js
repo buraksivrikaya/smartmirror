@@ -62,39 +62,72 @@ app.on("activate", () => {
 *****************************************************************/
 
 const express = require("express");
-const GmailAuth = require("./libs/GmailAuth.js");
-const GmailService = require("./libs/GmailService.js");
+var bodyParser = require("body-parser");
+let app = express();
+const GmailAuthorizer = require("./libs/GmailAuthorizer.js");
+const fs = require("fs");
 
-var auth = new GmailAuth(
-  "76077925517-8fhrcebbtmthkssssmb7u5l4jgmr78pg.apps.googleusercontent.com",
-  "JYsqVAFo8-9HNFASG7pMt6lQ",
-  "http://localhost:3000/oauthcallback",
-  "https://www.googleapis.com/auth/gmail.readonly"
-  );
+// const GmailAuth = require("./libs/GmailAuth.js");
+// const GmailService = require("./libs/GmailService.js");
 
-var host = express();
+// var auth = new GmailAuth(
+//   "76077925517-8fhrcebbtmthkssssmb7u5l4jgmr78pg.apps.googleusercontent.com",
+//   "JYsqVAFo8-9HNFASG7pMt6lQ",
+//   "http://localhost:3000/oauthcallback",
+//   "https://www.googleapis.com/auth/gmail.readonly"
+//   );
 
-host.get("/authorize", function(req, res) {
-  res.redirect(auth.generateAuthUrl());
-  //console.log(auth.generateAuthUrl());
+// var host = express();
+
+// host.get("/authorize", function(req, res) {
+//   res.redirect(auth.generateAuthUrl());
+//   //console.log(auth.generateAuthUrl());
+// });
+
+// host.get("/oauthcallback", function(req, res) {
+//   auth.authorize(req.query.code);
+// });
+
+// host.get("/listLastXMails", function(req, res) {
+//   service = new GmailService(auth.getAuth());
+//   service.listLastXMailId(1, function(msgs) {
+//     console.log(msgs)
+//     console.log(msgs.length);
+//     for(let i=0; i < msgs.length; i++) {
+//       let msg = msgs[i];
+//       service.getEmailById(msg.id, function(mail) {
+//         console.log(mail);
+//       });
+//     }
+//   });
+// });
+
+// host.listen(3000);
+
+let config = JSON.parse(fs.readFileSync("data/config.json"));
+
+let ga = new GmailAuthorizer(config["clientId"], config["clientSecret"], config["redirectUrl"], config["scopes"]);
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+let that;
+
+app.get('/', function (req, res) {
+  // that = res;
+  // res.sendFile(path.resolve("html/auth.html"));
+  res.redirect(ga.generateAuthUri());
 });
 
-host.get("/oauthcallback", function(req, res) {
-  auth.authorize(req.query.code);
-});
+// app.post('/', function (req, res) {
+//   var query1 = req.body.id;
+//   var query2 = req.body.name;
+//   console.log(query1);
+//   console.log(query2);
+//   that.redirect(ga.generateAuthUri());
+//   //console.log(that);
+// });
 
-host.get("/listLastXMails", function(req, res) {
-  service = new GmailService(auth.getAuth());
-  service.listLastXMailId(1, function(msgs) {
-    console.log(msgs)
-    console.log(msgs.length);
-    for(let i=0; i < msgs.length; i++) {
-      let msg = msgs[i];
-      service.getEmailById(msg.id, function(mail) {
-        console.log(mail);
-      });
-    }
-  });
-});
+app.listen(3000);
 
-host.listen(3000);
+

@@ -87,3 +87,5 @@ export class GmailService {
     }
 
 }
+
+module.exports = GmailService;

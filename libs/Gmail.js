@@ -15,3 +15,4 @@ var Gmail = (function () {
     return Gmail;
 }());
 exports.Gmail = Gmail;
+module.exports = Gmail;

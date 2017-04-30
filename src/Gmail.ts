@@ -21,3 +21,5 @@ export class Gmail {
     }
 
 }
+
+module.exports = Gmail;

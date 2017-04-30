@@ -26,8 +26,7 @@ export class User {
     }
 
     static loadFrom(uri: string): User {
-        let file = fs.readFileSync(uri);
-        let json = JSON.parse(file);
+        let json = JSON.parse(fs.readFileSync(uri));
 
         let user = new User(json["id"], json["name"]);
         if ("gmailAuth" in json) {
@@ -43,3 +42,5 @@ export class User {
     }
 
 }
+
+module.exports = User;

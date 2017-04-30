@@ -4,6 +4,7 @@
   "description": "",
   "main": "main.js",
   "scripts": {
+    "compile_ts": "tsc src/*.ts --outDir libs",
     "start": "electron ."
   },
   "author": "",

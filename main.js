@@ -12,7 +12,7 @@ function createWindow () {
   win.setFullScreen(true);
   // and load the index.html of the app.
   win.loadURL(url.format({
-    pathname: path.join(__dirname, "html/gui.html"),
+    pathname: path.join(__dirname, "frontend/html/gui.html"),
     protocol: "file:",
     slashes: true
   }));

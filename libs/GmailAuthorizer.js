@@ -16,7 +16,6 @@ var GmailAuthorizer = (function () {
         this.reditectUrl = redirectUrl;
         this.server = express();
     }
-    // TODO change redirect page to a html page indicating authorization is done
     GmailAuthorizer.prototype.listenForRequest = function (url, port, callback) {
         var that = this;
         this.server.get(url, function (request, response) {
@@ -26,7 +25,7 @@ var GmailAuthorizer = (function () {
             var auth = new Oauth2(that.clientId, that.clientSecret, that.reditectUrl);
             GmailAuthorizer.authorize(auth, request.query.code).then(function (auth) {
                 callback(auth);
-                response.redirect("http://www.google.com");
+                response.send("Done authorization");
             });
         });
         this.server.listen(port);

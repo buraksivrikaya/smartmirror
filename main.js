@@ -1,4 +1,4 @@
-const {app, BrowserWindow} = require("electron");
+const { app, BrowserWindow } = require("electron");
 const path = require("path");
 const url = require("url");
 
@@ -6,28 +6,28 @@ const url = require("url");
 // be closed automatically when the JavaScript object is garbage collected.
 let win;
 
-function createWindow () {
-  // Create the browser window.
-  win = new BrowserWindow();
-  win.setFullScreen(true);
-  // and load the index.html of the app.
-  win.loadURL(url.format({
-    pathname: path.join(__dirname, "html/gui.html"),
-    protocol: "file:",
-    slashes: true
-  }));
+function createWindow() {
+    // Create the browser window.
+    win = new BrowserWindow();
+    win.setFullScreen(true);
+    // and load the index.html of the app.
+    win.loadURL(url.format({
+        pathname: path.join(__dirname, "html/gui.html"),
+        protocol: "file:",
+        slashes: true
+    }));
 
-  // Open the DevTools.
-  //win.webContents.openDevTools();
+    // Open the DevTools.
+    //win.webContents.openDevTools();
 
-  // Emitted when the window is closed.
-  win.on("closed", () => {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    win = null
+    // Emitted when the window is closed.
+    win.on("closed", () => {
+        // Dereference the window object, usually you would store windows
+        // in an array if your app supports multi windows, this is the time
+        // when you should delete the corresponding element.
+        win = null
 
-  });
+    });
 }
 
 // This method will be called when Electron has finished
@@ -37,19 +37,19 @@ app.on("ready", createWindow);
 
 // Quit when all windows are closed.
 app.on("window-all-closed", () => {
-  // On macOS it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== "darwin") {
-    app.quit()
-  }
+    // On macOS it is common for applications and their menu bar
+    // to stay active until the user quits explicitly with Cmd + Q
+    if (process.platform !== "darwin") {
+        app.quit()
+    }
 });
 
 app.on("activate", () => {
-  // On macOS it"s common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (win === null) {
-    createWindow()
-  }
+    // On macOS it"s common to re-create a window in the app when the
+    // dock icon is clicked and there are no other windows open.
+    if (win === null) {
+        createWindow()
+    }
 });
 
 // In this file you can include the rest of your app"s specific main process
@@ -61,73 +61,22 @@ app.on("activate", () => {
 *                                                                 *
 *****************************************************************/
 
-const express = require("express");
-var bodyParser = require("body-parser");
-let app = express();
 const GmailAuthorizer = require("./libs/GmailAuthorizer.js");
 const fs = require("fs");
-
-// const GmailAuth = require("./libs/GmailAuth.js");
-// const GmailService = require("./libs/GmailService.js");
-
-// var auth = new GmailAuth(
-//   "76077925517-8fhrcebbtmthkssssmb7u5l4jgmr78pg.apps.googleusercontent.com",
-//   "JYsqVAFo8-9HNFASG7pMt6lQ",
-//   "http://localhost:3000/oauthcallback",
-//   "https://www.googleapis.com/auth/gmail.readonly"
-//   );
-
-// var host = express();
-
-// host.get("/authorize", function(req, res) {
-//   res.redirect(auth.generateAuthUrl());
-//   //console.log(auth.generateAuthUrl());
-// });
-
-// host.get("/oauthcallback", function(req, res) {
-//   auth.authorize(req.query.code);
-// });
-
-// host.get("/listLastXMails", function(req, res) {
-//   service = new GmailService(auth.getAuth());
-//   service.listLastXMailId(1, function(msgs) {
-//     console.log(msgs)
-//     console.log(msgs.length);
-//     for(let i=0; i < msgs.length; i++) {
-//       let msg = msgs[i];
-//       service.getEmailById(msg.id, function(mail) {
-//         console.log(mail);
-//       });
-//     }
-//   });
-// });
-
-// host.listen(3000);
+const User = require("./libs/User.js");
 
 let config = JSON.parse(fs.readFileSync("data/config.json"));
 
-let ga = new GmailAuthorizer(config["clientId"], config["clientSecret"], config["redirectUrl"], config["scopes"]);
+let ga = new GmailAuthorizer(
+    config["clientId"],
+    config["clientSecret"],
+    config["redirectUrl"],
+    config["scopes"]);
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
-let that;
-
-app.get('/', function (req, res) {
-  // that = res;
-  // res.sendFile(path.resolve("html/auth.html"));
-  res.redirect(ga.generateAuthUri());
+ga.listenForRequest("/auth", 3000, function (auth) {
+    // Now we have authorization
+    let user = new User(2, "test");
+    user.setGmailAuth(auth);
+    // Save it for later usage...
+    user.saveTo("data/test2.json");
 });
-
-// app.post('/', function (req, res) {
-//   var query1 = req.body.id;
-//   var query2 = req.body.name;
-//   console.log(query1);
-//   console.log(query2);
-//   that.redirect(ga.generateAuthUri());
-//   //console.log(that);
-// });
-
-app.listen(3000);
-
-

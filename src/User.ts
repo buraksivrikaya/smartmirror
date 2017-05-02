@@ -2,7 +2,7 @@
  * User
  */
 
-import { TwitterAuth } from "./TwitterAuth";
+const TwitterAuth = require("./TwitterAuth.js");
 const fs = require("fs");
 const googleapis = require("googleapis");
 const Oauth2 = googleapis.auth.OAuth2;
@@ -12,7 +12,7 @@ export class User {
     readonly id: number;
     readonly name: string;
     gmailAuth;
-    twitterAuth: TwitterAuth;
+    twitterAuth;
 
     constructor(id: number, name: string) {
         this.id = id;
@@ -23,7 +23,7 @@ export class User {
         this.gmailAuth = auth;
     }
 
-    setTwitterAuth(auth: TwitterAuth) {
+    setTwitterAuth(auth) {
         this.twitterAuth = auth;
     }
 
@@ -43,6 +43,15 @@ export class User {
             );
             auth.setCredentials(json["gmailAuth"]["credentials"]);
             user.setGmailAuth(auth);
+        }
+        if ("twitterAuth" in json) {
+            let auth = new TwitterAuth(
+                json["twitterAuth"]["consumerKey"],
+                json["twitterAuth"]["consumerSecret"],
+                json["twitterAuth"]["accessToken"],
+                json["twitterAuth"]["accessTokenSecret"]
+            );
+            user.setTwitterAuth(auth);
         }
         return user;
     }

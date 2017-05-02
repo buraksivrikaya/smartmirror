@@ -3,6 +3,7 @@
  * User
  */
 exports.__esModule = true;
+var TwitterAuth = require("./TwitterAuth.js");
 var fs = require("fs");
 var googleapis = require("googleapis");
 var Oauth2 = googleapis.auth.OAuth2;
@@ -27,6 +28,10 @@ var User = (function () {
             var auth = new Oauth2(json["gmailAuth"]["clientId_"], json["gmailAuth"]["clientSecret_"], json["gmailAuth"]["redirectUri_"]);
             auth.setCredentials(json["gmailAuth"]["credentials"]);
             user.setGmailAuth(auth);
+        }
+        if ("twitterAuth" in json) {
+            var auth = new TwitterAuth(json["twitterAuth"]["consumerKey"], json["twitterAuth"]["consumerSecret"], json["twitterAuth"]["accessToken"], json["twitterAuth"]["accessTokenSecret"]);
+            user.setTwitterAuth(auth);
         }
         return user;
     };

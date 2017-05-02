@@ -14,6 +14,9 @@ var User = (function () {
     User.prototype.setGmailAuth = function (auth) {
         this.gmailAuth = auth;
     };
+    User.prototype.setTwitterAuth = function (auth) {
+        this.twitterAuth = auth;
+    };
     User.prototype.saveTo = function (uri) {
         fs.writeFileSync(uri, JSON.stringify(this));
     };

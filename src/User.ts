@@ -2,6 +2,7 @@
  * User
  */
 
+import { TwitterAuth } from "./TwitterAuth";
 const fs = require("fs");
 const googleapis = require("googleapis");
 const Oauth2 = googleapis.auth.OAuth2;
@@ -11,6 +12,7 @@ export class User {
     readonly id: number;
     readonly name: string;
     gmailAuth;
+    twitterAuth: TwitterAuth;
 
     constructor(id: number, name: string) {
         this.id = id;
@@ -19,6 +21,10 @@ export class User {
 
     setGmailAuth(auth) {
         this.gmailAuth = auth;
+    }
+
+    setTwitterAuth(auth: TwitterAuth) {
+        this.twitterAuth = auth;
     }
 
     saveTo(uri: string): void {

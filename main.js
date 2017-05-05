@@ -111,3 +111,50 @@ Authorizer.listenOn(3000);
 //     console.log(tweets[0]);
 //     console.log(tweets[1]);
 // });
+
+var express = require('express');
+var webApp = express();
+
+webApp.use(express.static('www'));
+webApp.listen(8000, function(){
+    console.log('listening...');
+});
+
+
+
+
+webApp.get('/login', function (req, res) {
+    console.log("giris yapma");
+    var users = JSON.parse(fs.readFileSync("./data/user-meta.json"));
+    var data = req.query;
+
+    var index = 0;
+    for(var i = 0; i < users.length; i++){
+        if(users[i].id == data.id){
+            index = i;
+            break;
+        }
+        else{
+            index = -1;
+        }
+    }
+    console.log(index);
+    console.log(users);
+    if(index > -1){
+        var userSettings = JSON.parse(fs.readFileSync("./data/"+users[index].path+"settings.json"));
+        if(userSettings.password == data.password){
+            var response = [data.id, userSettings.admin];
+            console.log(response);
+            console.log(JSON.stringify(response));
+            res.send(JSON.stringify(response));
+        }
+        else{
+            res.send("2");
+        }
+    }
+    else{
+        res.send("1")
+        
+    }
+    res.end();
+});

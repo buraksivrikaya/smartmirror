@@ -1,7 +1,6 @@
 const { app, BrowserWindow } = require("electron");
 const path = require("path");
 const url = require("url");
-
 // Keep a global reference of the window object, if you don"t, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win;
@@ -86,8 +85,9 @@ Authorizer.registerGmailAuthOn(gauthConfig, "/auth/gmail", function (auth) {
     user.saveTo("data/test2GMAIL.json");
 });
 
-let tconfig = JSON.parse(fs.readFileSync("data/tconfig.json"));
+//let tconfig = JSON.parse(fs.readFileSync("data/tconfig.json"));
 
+/*
 let tauthConfig = new TwitterAuthConfig(
     tconfig["consumerKey"],
     tconfig["consumerSecret"],
@@ -101,6 +101,7 @@ Authorizer.registerTwitterAuthOn(tauthConfig, "/auth/twitter", function (auth) {
     // Save it for later usage...
     user.saveTo("data/test2TWITTER.json");
 });
+*/
 
 Authorizer.listenOn(3000);
 

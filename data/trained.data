@@ -36892,7 +36892,7 @@ labels: !!opencv-matrix
 labelsInfo:
    -
       label: 1
-      value: can
+      value: can1
    -
       label: 2
-      value: burak
+      value: burak2

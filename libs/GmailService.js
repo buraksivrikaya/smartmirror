@@ -3,10 +3,11 @@
  * GmailService
  */
 exports.__esModule = true;
-var Gmail_1 = require("./Gmail");
+//import { Gmail } from "./Gmail";
+var Gmail = require("./Gmail.js");
+var Base64 = require('js-base64');
 var Promise = require("promise");
 var googleapis = require("googleapis");
-var Base64 = require('js-base64').Base64;
 var GmailService = (function () {
     function GmailService(user) {
         this.auth = user.gmailAuth;
@@ -63,7 +64,7 @@ var GmailService = (function () {
                 "id": id
             }, function (error, result) {
                 if (!error) {
-                    resolve(new Gmail_1.Gmail(id, result.payload.headers[15].value, result.payload.headers[10].value, result.payload.headers[12].value, result["snippet"], Base64.decode(result.payload.parts[1]["body"]["data"])));
+                    resolve(new Gmail(id, result.payload.headers[15].value, result.payload.headers[10].value, result.payload.headers[12].value, result["snippet"], Base64.decode(result.payload.parts[1]["body"]["data"])));
                 }
                 else {
                     reject(error);

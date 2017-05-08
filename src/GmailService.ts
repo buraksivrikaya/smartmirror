@@ -2,11 +2,13 @@
  * GmailService
  */
 
-import { Gmail } from "./Gmail";
+
+//import { Gmail } from "./Gmail";
+const Gmail = require("./Gmail.js");
 import { User } from "./User";
+const Base64 = require('js-base64');
 const Promise = require("promise");
 const googleapis = require("googleapis");
-const Base64 = require('js-base64').Base64;
 
 export class GmailService {
 
@@ -21,7 +23,7 @@ export class GmailService {
         });
     }
 
-    readMail(count: number): Promise<Gmail[]> {
+    readMail(count: number): Promise<any[]> {
         let that = this;
         return new Promise(function (resolve, reject) {
             that.readMailId(count).then(function (result) {
@@ -63,7 +65,7 @@ export class GmailService {
     }
 
 
-    readMailById(id: string): Promise<Gmail> {
+    readMailById(id: string): Promise<any> {
         let that = this;
         return new Promise(function (resolve, reject) {
             that.gmailApi.users.messages.get({

@@ -8,9 +8,10 @@ var fs = require("fs");
 var googleapis = require("googleapis");
 var Oauth2 = googleapis.auth.OAuth2;
 var User = (function () {
-    function User(id, name) {
+    function User(id, isAdmin, password) {
         this.id = id;
-        this.name = name;
+        this.isAdmin = isAdmin;
+        this.password = password;
     }
     User.prototype.setGmailAuth = function (auth) {
         this.gmailAuth = auth;
@@ -23,7 +24,7 @@ var User = (function () {
     };
     User.loadFrom = function (uri) {
         var json = JSON.parse(fs.readFileSync(uri));
-        var user = new User(json["id"], json["name"]);
+        var user = new User(json["id"], json["isAdmin"], json["password"]);
         if ("gmailAuth" in json) {
             var auth = new Oauth2(json["gmailAuth"]["clientId_"], json["gmailAuth"]["clientSecret_"], json["gmailAuth"]["redirectUri_"]);
             auth.setCredentials(json["gmailAuth"]["credentials"]);

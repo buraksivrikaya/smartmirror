@@ -9,14 +9,16 @@ const Oauth2 = googleapis.auth.OAuth2;
 
 export class User {
 
-    readonly id: number;
-    readonly name: string;
+    readonly id: string;
+    readonly isAdmin: boolean;
+    readonly password: string;
     gmailAuth;
     twitterAuth;
 
-    constructor(id: number, name: string) {
+    constructor(id: string, isAdmin: boolean, password: string) {
         this.id = id;
-        this.name = name;
+        this.isAdmin = isAdmin;
+        this.password = password;
     }
 
     setGmailAuth(auth) {
@@ -34,7 +36,7 @@ export class User {
     static loadFrom(uri: string): User {
         let json = JSON.parse(fs.readFileSync(uri));
 
-        let user = new User(json["id"], json["name"]);
+        let user = new User(json["id"], json["isAdmin"], json["password"]);
         if ("gmailAuth" in json) {
             let auth = new Oauth2(
                 json["gmailAuth"]["clientId_"],

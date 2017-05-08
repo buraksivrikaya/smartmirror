@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Smart Mirror</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/login.css" rel="stylesheet">
+    <link href="css/index.css" rel="stylesheet">
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+	<script>var admin=localStorage.getItem('SmartAdmin');var loggedIn = localStorage.getItem('SmartLogedIn');var userName = localStorage.getItem('SmartUserName');</script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+  	<div id="popupModal"></div>
+	  <nav class="navbar navbar-default">
+	  <div class="container-fluid">
+	    <!-- Brand and toggle get grouped for better mobile display -->
+	    <div class="navbar-header">
+	      <a id="homeButton" class="navbar-brand" href=".">Smart Mirror</a>
+	    </div>
+
+	    <!-- Collect the nav links, forms, and other content for toggling -->
+	    <div class="collapse navbar-collapse" id="navigationBar">
+	      <ul class="nav navbar-nav">
+	        <li><a id="loginAreaButton">Giriş</a></li>
+	        <li><a href="#">Yeni Kullanıcı</a></li>
+	        <li><a class="adminSetting">Tüm Kullanıcılar</a></li>
+	        <li class="dropdown">
+	          <a id="settingsMenuButton" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Ayarlar <span class="caret"></span></a>
+	          <ul class="dropdown-menu">
+	            <li><a href="#">Ev</a></li>
+	            <li><a href="#">Sosyal</a></li>
+	            <li><a href="#">E-Posta</a></li>
+	          </ul>
+	        </li>
+
+	        <li><a href="#">Hakkında</a></li>
+	      </ul>
+
+	      <ul class="nav navbar-nav navbar-right">
+	        <li class="dropdown">
+	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Diğer<span class="caret"></span></a>
+	          <ul class="dropdown-menu">
+	            <li class="adminSetting"><a>Kablosuz</a></li>
+	             <li role="separator" class="divider"></li>
+	            <li id="logOutButton"><a>Çıkış</a></li>
+	          </ul>
+	        </li>
+	      </ul>
+	    </div><!-- /.navbar-collapse -->
+	  </div><!-- /.container-fluid -->
+	</nav>
+
+	<div id="container">
+    	<h1>Smart Mirror</h1>
+	</div>
+<div id="output">
+	</div>
+<button class="btn btn-info btn-block" type="vuhuuu">Wireless List</button>
+
+
+  <div class="container" style="margin-top:10px">
+  	<div id="wirelessSSID-container">
+  		<div class="list-group">
+  		</div>
+  	</div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="js/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap-notify.min.js"></script>
+    <script type="text/javascript" src="index.js"></script>
+
+    <script type="text/javascript">
+    	if(loggedIn == 1){
+    		$.notify('<strong>'+userName+'</strong> Hoş Geldiniz', { allow_dismiss: true });
+    	}
+
+    </script>
+    <script>
+    	$('button[type="vuhuuu"]').click(function(e) {
+            e.preventDefault();
+
+			$("#wirelessSSID-container .list-group").load("ssidtest.php").ready(
+					function(){
+						setTimeout(function(){
+							$('[type="ssidButton"]').click(function(a) {
+				                a.preventDefault();
+				                var ssid = $(this).children('[data-type="ssid"]')[0].innerHTML;
+
+				                var passwordFormHTML = '\
+									  <div class="form-group">\
+									    <label for="exampleInputPassword1">'+ssid+' için şifrenizi giriniz.</label>\
+									    <input type="password" class="form-control" id="wirelessPassword" placeholder="Şifre">\
+									  </div>';
+
+				                $("#popupModal").html(
+									'<div id="ssidPassModal" class="modal fade" role="dialog"> \
+										<div class="modal-dialog modal-sm">\
+									    <div class="modal-content">\
+									      <div class="modal-header">\
+									        <button type="button" class="close" data-dismiss="modal">&times;</button>\
+									        <h4 class="modal-title">'+ ssid +'</h4>\
+									      </div>\
+									      <div class="modal-body">'+ passwordFormHTML +'\
+									      </div>\
+									      <div class="modal-footer">\
+        									<button id="connectSSID" type="button" class="btn btn-primary">Onayla</button>\
+									        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>\
+									      </div>\
+									    </div>\
+									  </div>\
+									</div>').ready(function(){setTimeout(function(){
+    									
+    									$("#ssidPassModal").modal("show");
+
+    										$("#connectSSID").click(function(ev){
+	    										ev.preventDefault();
+	    										
+												$.ajax({
+	    											url: 'connectWireless.php',
+	    											type: 'GET',
+	    											data: {'ssid': ssid, 'pass': $('[id="wirelessPassword"').val()},
+	    											beforeSend: function () {
+	    												$('[class="modal-footer"]').trigger("add-alerts", {
+															  message: "Bağlanılıyor.",
+															  priority: "info"
+															});
+	    											},
+	    											success: function(data){
+	    												if(data === "1"){
+	    													
+	    												}
+	    												else{
+
+	    												}
+	    											}
+	    										});
+
+    										});
+									},400);});
+				            });
+						},200);
+					}
+				);
+    	});
+    </script>
+  </body>
+</html>

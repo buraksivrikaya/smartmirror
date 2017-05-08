@@ -64,7 +64,7 @@ var GmailService = (function () {
                 "id": id
             }, function (error, result) {
                 if (!error) {
-                    resolve(new Gmail(id, result.payload.headers[15].value, result.payload.headers[10].value, result.payload.headers[12].value, result["snippet"], Base64.decode(result.payload.parts[1]["body"]["data"])));
+                    resolve(new Gmail(id, result.payload.headers[18].value, result.payload.headers[17].value, result.payload.headers[20].value, result["snippet"], Base64.decode(result.payload.parts[1]["body"]["data"])));
                 }
                 else {
                     reject(error);

@@ -73,11 +73,23 @@ export class GmailService {
                 "id": id
             }, function (error, result) {
                 if (!error) {
+                    let date;
+                    let from;
+                    let subject;
+                    for(let i=0; i < result.payload.headers.length; i++) {
+                        if(result.payload.headers[i].name === "Date"){
+                            date = result.payload.headers[i].value;
+                        } else if(result.payload.headers[i].name === "From") {
+                            from = result.payload.headers[i].value;
+                        } else if(result.payload.headers[i].name === "Subject") {
+                            subject = result.payload.headers[i].value;
+                        }
+                    }
                     resolve(new Gmail(
                         id,
-                        result.payload.headers[18].value,
-                        result.payload.headers[17].value,
-                        result.payload.headers[20].value,
+                        date,
+                        from,
+                        subject,
                         result["snippet"],
                         Base64.decode(result.payload.parts[1]["body"]["data"])
                     ));

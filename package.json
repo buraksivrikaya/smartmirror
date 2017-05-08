@@ -19,7 +19,6 @@
     "googleapis": "^19.0.0",
     "imap": "^0.8.19",
     "jquery": "3.1.0",
-    "mailparser": "^2.0.4",
     "oauth": "^0.9.15",
     "promise": "^7.1.1",
     "twit": "^2.2.5"

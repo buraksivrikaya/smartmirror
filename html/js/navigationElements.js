@@ -26,9 +26,9 @@ var createNavigationMailItem = function(index, from, date, subject, content){
 var getNavigationMails = function(){
 	var template = '';
 	for(var index = 0; index < mailList.length ; index++){
-		var from = mailList[index].from.value[0].name === "" ? mailList[index].from.value[0].address : mailList[index].from.value[0].name;
-		var date = mailList[index].date.toDateString() +' '+ mailList[index].date.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1");
-		template += createNavigationMailItem(index, from , date, mailList[index].subject, mailList[index].text);
+		var from = mailList[index].sender;
+		var date = mailList[index].date;
+		template += createNavigationMailItem(index, from , date, mailList[index].subject, mailList[index].html);
 	}
 	
 
@@ -63,69 +63,74 @@ var getNavigationHtml = function(dataType){
 	else{return navigationContents.underConstruction;}
 };
 
-
-//MAIL START
-//var htmlToText = require('html-to-text');
-var Imap = require('imap'),
-    inspect = require('util').inspect;
-
-var simpleParser = require("mailparser").simpleParser;
-
-var imap = new Imap({
-  user: '*@gmail.com',
-  password: '*',
-  host: 'imap.gmail.com',
-  port: 993,
-  tls: true,
-  //params: { charset: 'utf8' }
-});
-
-function openInbox(cb) {
-  imap.openBox('INBOX', true, cb);
+var onMailRead = function(mails) {
+	mailList = mails;
+	renderMails();
 }
 
-imap.once('ready', function() {
-	openInbox(function(err, box) {
-		if (err) throw err;
 
-		var mailEnd = 15; //Default 15 mails
-		(box.messages.total-mailEnd) < 0 ? mailEnd = 0 : mailEnd = box.messages.total-mailEnd+1;
-		var f = imap.seq.fetch(box.messages.total + ':' + mailEnd, { bodies: '' });
-		f.on('message', function(msg, seqno) {
-			var prefix = '(#' + seqno + ') ';
-			msg.on('body', function(stream, info) {
-				var buffer = '';
-				stream.on('data', function(chunk) {
-					buffer += chunk.toString('utf8');
-					//console.log(chunk);
-					//buffer += utf8.decode(chunk);
-					//buffer += new String(chunk, "utf8");
-				});
+// //MAIL START
+// //var htmlToText = require('html-to-text');
+// var Imap = require('imap'),
+//     inspect = require('util').inspect;
 
-				stream.once('end', function() {
-				    simpleParser(buffer, (err, mail)=>{
-                        if(mail.date != null){
-                        	mailList.push(mail);
-                        }
-                    });
-				});
-			});
-		});
-		f.once('error', function(err) {
-			console.log('Fetch error: ' + err);
-			errorMessage = 'Fetch error: ' + err;
-		});
-		f.once('end', function() {
-			imap.end();
-		});
-	});
-});
-imap.once('error', function(err) {
-  console.log(err);
-  errorMessage = err;
-});
-imap.once('end', function() {
-	imap.end();
-});
-imap.connect();
-//MAIL END
+// var simpleParser = require("mailparser").simpleParser;
+
+// var imap = new Imap({
+//   user: '*@gmail.com',
+//   password: '*',
+//   host: 'imap.gmail.com',
+//   port: 993,
+//   tls: true,
+//   //params: { charset: 'utf8' }
+// });
+
+// function openInbox(cb) {
+//   imap.openBox('INBOX', true, cb);
+// }
+
+// imap.once('ready', function() {
+// 	openInbox(function(err, box) {
+// 		if (err) throw err;
+
+// 		var mailEnd = 15; //Default 15 mails
+// 		(box.messages.total-mailEnd) < 0 ? mailEnd = 0 : mailEnd = box.messages.total-mailEnd+1;
+// 		var f = imap.seq.fetch(box.messages.total + ':' + mailEnd, { bodies: '' });
+// 		f.on('message', function(msg, seqno) {
+// 			var prefix = '(#' + seqno + ') ';
+// 			msg.on('body', function(stream, info) {
+// 				var buffer = '';
+// 				stream.on('data', function(chunk) {
+// 					buffer += chunk.toString('utf8');
+// 					//console.log(chunk);
+// 					//buffer += utf8.decode(chunk);
+// 					//buffer += new String(chunk, "utf8");
+// 				});
+
+// 				stream.once('end', function() {
+// 				    simpleParser(buffer, (err, mail)=>{
+//                         if(mail.date != null){
+//                         	mailList.push(mail);
+//                         }
+//                     });
+// 				});
+// 			});
+// 		});
+// 		f.once('error', function(err) {
+// 			console.log('Fetch error: ' + err);
+// 			errorMessage = 'Fetch error: ' + err;
+// 		});
+// 		f.once('end', function() {
+// 			imap.end();
+// 		});
+// 	});
+// });
+// imap.once('error', function(err) {
+//   console.log(err);
+//   errorMessage = err;
+// });
+// imap.once('end', function() {
+// 	imap.end();
+// });
+// imap.connect();
+// //MAIL END

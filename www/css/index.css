@@ -1,6 +1,30 @@
 #container {
 	width: 80%;
-	background: purple;
 	margin-right: auto;
 	margin-left:auto;
+}
+
+#userList {
+	width: 80%;
+	margin-right: auto;
+	margin-left:auto;
+}
+
+.removeUserButton{
+	margin-right: 5px;
+	color:black;
+}
+.removeUserButton:hover{
+	margin-right: 5px;
+	color:#82292f;
+}
+
+.authIcon{
+	margin-left:5px;
+}
+.fa-twitter{
+	color:#4099FF;
+}
+.fa-envelope-o{
+	color: #892229;
 }

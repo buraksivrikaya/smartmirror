@@ -11,10 +11,12 @@ $(document).ready(function(){
   		$('#logOutButton').removeClass('hidden');
   		$('#loginAreaButton').addClass('hidden');
   		$('#settingsMenuButton').removeClass('hidden');
+  		$('#loggedInSettingsMenu').removeClass('hidden');
   	}else{
   		$('#logOutButton').addClass('hidden');
   		$('#loginAreaButton').removeClass('hidden');
   		$('#settingsMenuButton').addClass('hidden');
+  		$('#loggedInSettingsMenu').addClass('hidden');
   	}
 
 
@@ -22,10 +24,10 @@ $(document).ready(function(){
 		localStorage.setItem('SmartLogedIn', 0);
 		localStorage.setItem('SmartAdmin', 0);
 		localStorage.setItem('SmartUserName', 0);
-		$.notify('<strong>Çıkış Yapılıyor</strong> Lütfen Bekleyiniz', { allow_dismiss: false });
+		$.notify('Çıkış Yapılıyor. Lütfen Bekleyiniz', {className:"notify", showDuration:"500", autoHide: true, globalPosition: "top right" });
 		window.setTimeout(function() {
 			location.reload();	
-		}, 200);
+		}, 500);
   	});
 
 	$('#loginAreaButton').on('click', function(){
@@ -43,7 +45,7 @@ $(document).ready(function(){
 
 		$('#container').ready(function(){
 			$('#loginButton').on('click', function(e){	
-				var notify = $.notify('<strong>Giriş Yapılıyor</strong> Lütfen Bekleyiniz', { allow_dismiss: false });
+				$.notify('Giriş Yapılıyor. Lütfen Bekleyiniz', {className:"notify", showDuration:"500", autoHide: true, globalPosition: "top right" });
 				e.preventDefault();
 				var $this = $(this);
 				$this.button('loading');
@@ -59,18 +61,20 @@ $(document).ready(function(){
 					    	success: function(result){
 					        	if(result == "1"){//no user
 					        		console.log("boyle kullanıcı adı ile biri yok");
+					        		$('input[name=user]').notify( "Hatalı Kullanıcı", {className: "error", position:"left middle"});
 					        	}
 					        	else if(result == "2"){//incorrect password
 					        		console.log("şifre hatalı");
-
+					        		$('input[type=password]').notify( "Hatalı Şifre", {className: "error", position:"left middle"});
 					        	}
 					        	else{//correct password
 									console.log("her sey dogru");
 									var res = JSON.parse(result);
 									localStorage.setItem('SmartLogedIn', 1);
-									localStorage.setItem('SmartAdmin', res[1]);
+									console.log(res[1]);
+									localStorage.setItem('SmartAdmin', res[1] == true ? 1:0);
 									localStorage.setItem('SmartUserName', res[0]);
-									notify.close();
+									//notify.close();
 									location.reload();
 					        	}
 					    	}
@@ -78,21 +82,64 @@ $(document).ready(function(){
 					}
 					else{
 						console.log("kısa kullanıcı adı veya password");
+					    $('#loginButton').notify( "Kısa kullanıcı adı veya şifre", {className: "error", position:"bottom center"});
 					}
-
-
-
-
-				}, 1000);
+				}, 500);
 			});
-
 		});
-          
 	});
 
 
 
 
+    $('#showAllUsersButton').on('click', function(e){
+        console.log("all users list");
+
+        $.ajax({
+            url: "./getUsers",
+            success: function(result){
+                var temp = '<ul id="userList" class="list-group">\
+                <h4 class="list-group-item-heading">Kullanıcı Listesi</h4>';
+                var userList = JSON.parse(result);
+                userList.forEach(function(item,index){
+                	console.log(item.id);
+			        temp += '<li class="list-group-item"><a class="removeUserButton" data-id="'+ item.id +'"><span class="glyphicon glyphicon-trash"></span></a>' + item.id +'\
+			        ' + (item.twitter > 0 ? '<i class="fa fa-twitter authIcon"></i>' : '') + (item.gmail > 0 ? '<i class="fa fa-envelope-o authIcon"></i>' : '') +'</li>';
+			    });
+				temp += '</ul>';
+
+                $('#container').html(temp);
+
+
+                $('#container').ready(function(){
+				    $('.removeUserButton').on('click', function(e){
+				    	var userToRemove = $(this).data('id');
+				        console.log("remove user " + userToRemove);
+
+				        if(confirm(userToRemove + ' kişisini silmek istediğinizden emin misiniz?')){
+				        	console.log("removed " + userToRemove);
+				        	$.ajax({
+						    	url: "./removeUser", 
+						    	data: {id : userToRemove}, 
+						    	success: function(result){
+				        			$.notify(userToRemove + ' kişisi başarıyla silindi...', {className:"success", showDuration:"500", autoHide: true, globalPosition: "top right" });
+						    		$('#showAllUsersButton').click();
+						    	}
+							});
+				        }else{
+				        	console.log("canceled");
+				        	$.notify(userToRemove + ' kişisini silme iptal edildi...', {className:"notify", showDuration:"500", autoHide: true, globalPosition: "top right" });
+				        }
+				        
+
+				    });
+
+                });
+
+            }
+        });
+
+    });
 
 
 });

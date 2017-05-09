@@ -67,6 +67,7 @@ var GmailService = (function () {
                     var date = void 0;
                     var from = void 0;
                     var subject = void 0;
+                    var html = void 0;
                     for (var i = 0; i < result.payload.headers.length; i++) {
                         if (result.payload.headers[i].name === "Date") {
                             date = result.payload.headers[i].value;
@@ -78,7 +79,13 @@ var GmailService = (function () {
                             subject = result.payload.headers[i].value;
                         }
                     }
-                    resolve(new Gmail(id, date, from, subject, result["snippet"], Base64.decode(result.payload.parts[1]["body"]["data"])));
+                    if (result.payload.parts) {
+                        html = Base64.decode(result.payload.parts[1]["body"]["data"]);
+                    }
+                    else {
+                        html = Base64.decode(result.payload["body"]["data"]);
+                    }
+                    resolve(new Gmail(id, date, from, subject, result["snippet"], html));
                 }
                 else {
                     reject(error);

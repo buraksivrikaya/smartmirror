@@ -6,7 +6,7 @@
 //import { Gmail } from "./Gmail";
 const Gmail = require("./Gmail.js");
 import { User } from "./User";
-const Base64 = require('js-base64');
+const Base64 = require("../node_modules/js-base64/base64.js");
 const Promise = require("promise");
 const googleapis = require("googleapis");
 

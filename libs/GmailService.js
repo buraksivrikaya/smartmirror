@@ -5,7 +5,7 @@
 exports.__esModule = true;
 //import { Gmail } from "./Gmail";
 var Gmail = require("./Gmail.js");
-var Base64 = require('js-base64');
+var Base64 = require("../node_modules/js-base64/base64.js");
 var Promise = require("promise");
 var googleapis = require("googleapis");
 var GmailService = (function () {

@@ -7,8 +7,8 @@ let win;
 
 function createWindow() {
     // Create the browser window.
-    win = new BrowserWindow();
-    win.setFullScreen(true);
+    win = new BrowserWindow({width:"200px", height:"200px"});
+    //win.setFullScreen(true);
     // and load the index.html of the app.
     win.loadURL(url.format({
         pathname: path.join(__dirname, "html/gui.html"),
@@ -17,8 +17,7 @@ function createWindow() {
     }));
 
     // Open the DevTools.
-    //win.webContents.openDevTools();
-
+    win.webContents.openDevTools();
     // Emitted when the window is closed.
     win.on("closed", () => {
         // Dereference the window object, usually you would store windows
@@ -113,6 +112,7 @@ Authorizer.listenOn(3000);
 //     console.log(tweets[1]);
 // });
 
+
 var express = require('express');
 var webApp = express();
 
@@ -122,40 +122,56 @@ webApp.listen(8000, function(){
 });
 
 
-
-
 webApp.get('/login', function (req, res) {
     console.log("giris yapma");
-    var users = JSON.parse(fs.readFileSync("./data/user-meta.json"));
     var data = req.query;
 
-    var index = 0;
-    for(var i = 0; i < users.length; i++){
-        if(users[i].id == data.id){
-            index = i;
-            break;
-        }
-        else{
-            index = -1;
-        }
-    }
-    console.log(index);
-    console.log(users);
-    if(index > -1){
-        var userSettings = JSON.parse(fs.readFileSync("./data/"+users[index].path+"settings.json"));
+    if(fs.existsSync('data/'+data.id+'.json')){
+        var userSettings = JSON.parse(fs.readFileSync('./data/'+data.id+'.json'));
         if(userSettings.password == data.password){
-            var response = [data.id, userSettings.admin];
+            var response = [data.id, userSettings.isAdmin];
             console.log(response);
             console.log(JSON.stringify(response));
             res.send(JSON.stringify(response));
         }
         else{
+            console.log("2");
             res.send("2");
         }
     }
     else{
+        console.log("1")
         res.send("1")
         
     }
+    res.end();
+});
+
+
+webApp.get('/getUsers', function (req, res) {
+    var userList = JSON.parse(fs.readFileSync('./data/user-meta.json'));
+    var pureUserList = [];//[{userid, gmail, twitter}}
+
+    userList.forEach(function(item,index){
+        var userData = JSON.parse(fs.readFileSync('./data/'+ item));
+        var user = {};
+        user.gmail = userData.gmailAuth != null ? 1 : 0;
+        user.twitter = userData.twitterAuth != null ? 1 : 0;
+        user.id = item.split('.')[0];
+        pureUserList.push(user);
+    });
+
+    res.send(JSON.stringify(pureUserList));
+    res.end();
+});
+
+
+
+webApp.get('/removeUser', function (req, res) { //burada imgs klasörünü de sil 
+    console.log("kullanici sil " + req.query.id);
+    fs.unlinkSync('./data/'+req.query.id+'.json');
+    var userList = JSON.parse(fs.readFileSync('./data/user-meta.json'));
+    userList.splice(userList.indexOf(req.query.id+'.json'), 1);
+    fs.writeFileSync('./data/user-meta.json', JSON.stringify(userList));
     res.end();
 });

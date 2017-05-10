@@ -87,3 +87,16 @@ iframe #agenda *{
 	background:black;
 	border: none;
 }
+#notificationLogin {
+    position:fixed;
+    top:340px;
+    width:80%;
+    z-index:105;
+    text-align:center;
+    font-weight:normal;
+    font-size:14px;
+    font-weight:bold;
+    color:white;
+    background-color:#FF7800;
+    padding:5px;
+}

@@ -38,10 +38,19 @@ $(document).ready(function () {
 
 		faceDetected = 1;
 		FaceUtilAddon.stopListening(); //bunu kaldırırsan surekli dinler
-		window.setTimeout(function (a) {
-			$('#BodyElements').removeClass('hidden');
-			gest.start();
-		}, 150);
+
+		
+		    
+	    $("#notificationLogin").append(msg + ' hoşgeldin...');
+	    $("#notificationLogin").fadeIn("slow", function() {
+			window.setTimeout(function(){
+				$("#notificationLogin").fadeOut( "slow", function() {
+					$( "#BodyElements" ).fadeIn("slow", function(){
+						gest.start();
+					});
+				});
+		    },300);
+		});
 	});
 
 	gest.options.subscribeWithCallback(function (gesture) {

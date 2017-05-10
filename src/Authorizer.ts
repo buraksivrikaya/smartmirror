@@ -48,7 +48,8 @@ export class Authorizer {
                 let auth = Authorizer.getGmailAuth();
                 Authorizer.authorizeGmail(auth, request.query.code).then(function (auth) {
                     Authorizer.gmailCallback(auth);
-                    response.send("Done authorization");
+                    // response.send("Done authorization");
+                    response.redirect("http://localhost:8000/");
                 });
             });
         }
@@ -73,7 +74,8 @@ export class Authorizer {
             this.server.get(redirectUrl, function (request, response) {
                 Authorizer.authorizeTwitter(auth, request.query.oauth_token, otokenSecret, request.query.oauth_verifier).then(function (auth) {
                     Authorizer.twitterCallback(auth);
-                    response.send("Done authorization");
+                    // response.send("Done authorization");
+                    response.redirect("http://localhost:8000/");
                 });
             });
         }

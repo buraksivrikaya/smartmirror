@@ -86,10 +86,12 @@ export class GmailService {
                             subject = result.payload.headers[i].value;
                         }
                     }
-                    if(result.payload.parts) {
+                    if(result.payload.parts && result.payload.parts.length > 1) {
                         html = Base64.decode(result.payload.parts[1]["body"]["data"]);
-                    } else {
+                    } else if(result.payload.body) {
                         html = Base64.decode(result.payload["body"]["data"]);
+                    } else {
+                        html = "ERROR: Failed to parse html";
                     }
                     resolve(new Gmail(
                         id,

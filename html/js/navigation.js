@@ -28,7 +28,8 @@ $(document).ready(function () {
 
 
 	FaceUtilAddon.onDetected(80, function (msg) {	// buradaki sayı 100-x = emin olma yüzdesi ne kadar düşük olursa o kadar emin olduğu zaman çağırır
-		msg = "can1";	// for debug only        
+		//msg = "can1";	// for debug only 
+		msg = "burak2";      
 		console.log(msg);
 
 		let loggedUser = User.loadFrom("data/" + msg + ".json");

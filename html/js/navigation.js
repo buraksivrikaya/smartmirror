@@ -39,6 +39,7 @@ $(document).ready(function () {
 		faceDetected = 1;
 		FaceUtilAddon.stopListening(); //bunu kaldırırsan surekli dinler
 		window.setTimeout(function (a) {
+			$('#BodyElements').removeClass('hidden');
 			gest.start();
 		}, 150);
 	});

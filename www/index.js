@@ -182,20 +182,71 @@ $(document).ready(function () {
         $.ajax({
             url: "./getWirelessList",
             success: function (result) {
-            	console.log(result);
                 if (wirelessList) {
                     wirelessList = JSON.parse(result);
-                    console.log(wirelessList[0]);
 
-                    wirelessList.forEach(function (item, index) {
-                        console.log(item);
-                        $('#wirelessSSID-container').append('<div class="list-group-item wirelessConnectButton" style="text-align:left;overflow: hidden;" type="ssidButton">\
+                    wirelessList.forEach(function (item, index) {//direk bastiralim bi bakalim nasil kurtar beni haci
+                        $('#wirelessSSID-container').append('<div class="list-group-item wirelessConnectButton" data-ssid="'+ item.ssid +'"style="text-align:left;overflow: hidden;" type="ssidButton">\
 															<img src="'+ (item.power == "▂▄▆_" || item.power == "▂▄▆█" ? "./images/wireless-icon-high.png" : (item.power == "▂▄__" ? "./images/wireless-icon-medium.png" : "./images/wireless-icon-low.png")) + '" style="width:20px; height:auto; margin-right:10px; vertical-align: middle;">\
 															<h5 style="margin-right:10px; display:inline-block" data-type="ssid">'+ item.ssid + '</h5>\
 											            </div>');
                     });
 
+                    $('#wirelessSSID-container').ready(function(){
+                    	$('.wirelessConnectButton').on('click', function(a){
+                    		a.preventDefault();
+                            var currentSSID = $(this).data('ssid');
+                             var passwordFormHTML = '\
+                                                     <div class="form-group">\
+                                                       <label for="exampleInputPassword1">'+currentSSID+' için şifrenizi giriniz.</label>\
+                                                       <input type="password" class="form-control" id="wirelessPassword" placeholder="Şifre">\
+                                                     </div>';
 
+                            $("#popupModal").html(
+                                       '<div id="ssidPassModal" class="modal fade" role="dialog"> \
+                                                   <div class="modal-dialog modal-sm">\
+                                               <div class="modal-content">\
+                                                 <div class="modal-header">\
+                                                   <button type="button" class="close" data-dismiss="modal">&times;</button>\
+                                                   <h4 class="modal-title">Sifrenizi Giriniz</h4>\
+                                                 </div>\
+                                                 <div class="modal-body">'+ passwordFormHTML +'\
+                                                 </div>\
+                                                 <div class="modal-footer">\
+                                                   <button id="connectSSID" type="button" class="btn btn-primary">Onayla</button>\
+                                                   <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>\
+                                                 </div>\
+                                               </div>\
+                                             </div>\
+                                           </div>').ready(function(){
+
+                                                $('#ssidPassModal').modal("show");
+                                                $('#connectSSID').on('click', function(b){
+                                                    b.preventDefault();//bu bi boka yaramiyo burda :D
+                                                    console.log("sifre : " + $('#wirelessPassword').val());
+                                                    var password = $('#wirelessPassword').val();
+                                                    $.ajax({
+                                                        url: "./connectNetwork",
+                                                        data: { ssid: currentSSID, password: password},
+                                                        success: function (result) {
+
+                                                        }
+                                                    });
+
+
+
+                                                });
+
+                                           });
+
+
+
+//bu sifre girecegi yer ARTIK FRONTCU OLDUM :D
+
+
+                    		console.log("buradayim");
+                    	});
+                    });
 
 
                 }

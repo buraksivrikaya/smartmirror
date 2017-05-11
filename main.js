@@ -187,14 +187,7 @@ webApp.get('/removeUser', function (req, res) {//SHOULD ALSO DELETE IMGS FOLDER 
 });
 
 var cmd = require('node-cmd');
-//cmd.run('touch example.created.file');
 var wirelessDev = 'wlp5s0';
-
-//getAsync('iwlist '+ wirelessDev +' scan | egrep "Cell |Quality|ESSID"').then(data => {
-/*
- 
-console.log(unparsedList.length);
-*/
 
 
 
@@ -214,9 +207,6 @@ webApp.get('/getWirelessList', function (req, res) {//SHOULD ALSO DELETE IMGS FO
                         var ssid = unparsedList[i].substring(5, unparsedList[1].length).replace(/\s+/g, "");
                         wirelessList.push({ "power": power, "ssid": ssid });
                     }
-
-
-                    console.log(wirelessList); 
                     res.send(JSON.stringify(wirelessList));
                     res.end();
 
@@ -225,7 +215,31 @@ webApp.get('/getWirelessList', function (req, res) {//SHOULD ALSO DELETE IMGS FO
                 }
 
             }
-        });
+        }); 
+});
 
-    
+webApp.get('/connectNetwork', function (req, res) {//SHOULD ALSO DELETE IMGS FOLDER //id,
+    var ssid = req.query.ssid;
+    var pass = req.query.password;
+
+    cmd.run('sudo nmcli device wifi connect '+ ssid +' password '+ pass);
+    /*
+    cmd.get(
+        //'sudo iwconfig wlp5s0 essid ' + ssid + ' key s:' + pass, //tamam kolay gelsin. buraya göre baglancak iste bu. denerim ben
+        'nmcli device wifi connect '+ ssid +' password '+ pass,
+        function (err, data, stderr) {
+            var parsedList = [];
+            if (!err) {
+                if (data) {
+                    console.log(data);
+                    res.send(data);
+                    res.end();
+                }
+            } else {
+                    console.log('error', err);
+                }
+
+            
+        }); */
+
 });

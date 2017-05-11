@@ -66,6 +66,7 @@ const GmailAuthConfig = require("./libs/GmailAuthConfig.js");
 const TwitterAuthConfig = require("./libs/TwitterAuthConfig.js");
 const Twit = require("twit");
 const TwitterService = require("./libs/TwitterService.js");
+const cookie_name = "smloggeduser";
 
 let gconfig = JSON.parse(fs.readFileSync("data/gconfig.json"));
 
@@ -76,12 +77,13 @@ let gauthConfig = new GmailAuthConfig(
     gconfig["scopes"]
 );
 
-Authorizer.registerGmailAuthOn(gauthConfig, "/auth/gmail", function (auth) {
+Authorizer.registerGmailAuthOn(gauthConfig, "/auth/gmail", function (auth, req) {
     // Now we have authorization
-    let user = new User(2, "test");
-    user.setGmailAuth(auth);
+    // let user = new User(2, "test");
+    // user.setGmailAuth(auth);
     // Save it for later usage...
-    user.saveTo("data/test2GMAIL.json");
+    // user.saveTo("data/test2GMAIL.json");
+    console.log(req.cookies[cookie_name]);
 });
 
 //let tconfig = JSON.parse(fs.readFileSync("data/tconfig.json"));
@@ -93,7 +95,7 @@ let tauthConfig = new TwitterAuthConfig(
     tconfig["redirectUrl"]
 );
 
-Authorizer.registerTwitterAuthOn(tauthConfig, "/auth/twitter", function (auth) {
+Authorizer.registerTwitterAuthOn(tauthConfig, "/auth/twitter", function (auth, req) {
     // Now we have authorization
     let user = new User(2, "test");
     user.setTwitterAuth(auth);
@@ -114,9 +116,11 @@ Authorizer.listenOn(3000);
 
 
 var express = require('express');
+var cookieParser = require('cookie-parser');
 var webApp = express();
 
 webApp.use(express.static('www'));
+webApp.use(cookieParser());
 webApp.listen(8000, function(){
     console.log('smart mirror is listening from port 8000...');
 });
@@ -128,6 +132,8 @@ webApp.get('/login', function (req, res) {
     if(fs.existsSync('data/'+data.id+'.json')){//id, password, [id,isadmin]
         var userSettings = JSON.parse(fs.readFileSync('./data/'+data.id+'.json'));
         if(userSettings.password == data.password){
+            // set user cookie for later usage
+            res.cookie(cookie_name , data.id);
             var response = [data.id, userSettings.isAdmin];
             res.send(JSON.stringify(response));
         }
@@ -149,7 +155,6 @@ webApp.get('/getUserSettings', function (req, res) {//id, [gmail, twitter]
     user.gmail = userData.gmailAuth != null ? 1 : 0;
     user.twitter = userData.twitterAuth != null ? 1 : 0;
     user.id = data.userid;
-
     res.send(JSON.stringify(user));
 
     res.end();

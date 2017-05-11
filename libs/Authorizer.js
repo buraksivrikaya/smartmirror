@@ -7,6 +7,7 @@ var TwitterAuth = require("./TwitterAuth.js");
 var googleapis = require("googleapis");
 var Oauth2 = googleapis.auth.OAuth2;
 var express = require("express");
+var cookieParser = require("cookie-parser");
 var Promise = require("promise");
 var OAuth = require("oauth").OAuth;
 var Authorizer = (function () {
@@ -23,6 +24,7 @@ var Authorizer = (function () {
         this.twitterCallback = callback;
     };
     Authorizer.listenOn = function (port) {
+        this.server.use(cookieParser());
         if (this.gmailConfig && this.gmailUrl && this.gmailCallback) {
             this.server.get(Authorizer.gmailUrl, function (request, response) {
                 response.redirect(Authorizer.generateGmailAuthUri());
@@ -32,7 +34,7 @@ var Authorizer = (function () {
             this.server.get(redirectUrl, function (request, response) {
                 var auth = Authorizer.getGmailAuth();
                 Authorizer.authorizeGmail(auth, request.query.code).then(function (auth) {
-                    Authorizer.gmailCallback(auth);
+                    Authorizer.gmailCallback(auth, request);
                     // response.send("Done authorization");
                     response.redirect("http://localhost:8000/");
                 });
@@ -56,7 +58,7 @@ var Authorizer = (function () {
             redirectUrl = redirectUrl.substr(redirectUrl.lastIndexOf("/"));
             this.server.get(redirectUrl, function (request, response) {
                 Authorizer.authorizeTwitter(auth_1, request.query.oauth_token, otokenSecret_1, request.query.oauth_verifier).then(function (auth) {
-                    Authorizer.twitterCallback(auth);
+                    Authorizer.twitterCallback(auth, request);
                     // response.send("Done authorization");
                     response.redirect("http://localhost:8000/");
                 });

@@ -8,6 +8,7 @@ const TwitterAuth = require("./TwitterAuth.js");
 const googleapis = require("googleapis");
 const Oauth2 = googleapis.auth.OAuth2;
 const express = require("express");
+const cookieParser = require("cookie-parser");
 const Promise = require("promise");
 const OAuth = require("oauth").OAuth;
 
@@ -36,6 +37,7 @@ export class Authorizer {
     }
 
     public static listenOn(port: number) {
+        this.server.use(cookieParser());
         if (this.gmailConfig && this.gmailUrl && this.gmailCallback) {
             this.server.get(Authorizer.gmailUrl, function (request, response) {
                 response.redirect(Authorizer.generateGmailAuthUri());
@@ -47,7 +49,7 @@ export class Authorizer {
             this.server.get(redirectUrl, function (request, response) {
                 let auth = Authorizer.getGmailAuth();
                 Authorizer.authorizeGmail(auth, request.query.code).then(function (auth) {
-                    Authorizer.gmailCallback(auth);
+                    Authorizer.gmailCallback(auth, request);
                     // response.send("Done authorization");
                     response.redirect("http://localhost:8000/");
                 });
@@ -73,7 +75,7 @@ export class Authorizer {
 
             this.server.get(redirectUrl, function (request, response) {
                 Authorizer.authorizeTwitter(auth, request.query.oauth_token, otokenSecret, request.query.oauth_verifier).then(function (auth) {
-                    Authorizer.twitterCallback(auth);
+                    Authorizer.twitterCallback(auth, request);
                     // response.send("Done authorization");
                     response.redirect("http://localhost:8000/");
                 });

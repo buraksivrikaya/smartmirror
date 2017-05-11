@@ -142,4 +142,41 @@ $(document).ready(function(){
     });
 
 
+    $('#settingsMenuButton').on('click', function(e){
+        console.log("settings menu clicked");
+        var grantedTemplate = '<i class="fa fa-check-circle-o grantedIcon" aria-hidden="true"></i>';
+        var unGrantedTemplate = '<i class="fa fa-times-circle-o grantedIcon" aria-hidden="true"></i>';
+        var settingsListTemplate= '<ul class="list-group">\
+							        <li class="list-group-item" id="gmailAuth"><i class="fa fa-envelope-o authIcon"></i>Gmail\
+							        	<a href="http://localhost:3000/auth/gmail" id="authGmailButton" class="btn btn-info authButton" role="button">Giriş</a>\
+							        	<a id="authGmailButton" class="btn btn-danger authButton" role="button">Çıkış</a></li>\
+							        <li class="list-group-item" id=twitterAuth><i class="fa fa-twitter authIcon"></i>Twitter\
+							        	<a href="/auth/gmail" id="" class="btn btn-info authButton" role="button">Giriş</a>\
+							        	<a id="" class="btn btn-danger authButton" role="button">Çıkış</a></li></li></ul>';
+
+
+        $('#container').html(settingsListTemplate);
+		var username = localStorage.getItem("SmartUserName");
+
+		$.ajax({
+	    	url: "./getUserSettings", 
+	    	data: {id : username}, 
+	    	success: function(result){
+    			var settings = JSON.parse(result);
+    			settings.gmail == 1 ? $('#gmailAuth i').before(grantedTemplate): $('#gmailAuth i').before(unGrantedTemplate);
+    			settings.twitter == 1 ? $('#twitterAuth i').before(grantedTemplate): $('#twitterAuth i').before(unGrantedTemplate);
+	    	}
+		});
+    });
+
+
+
+    $('#wirelessGetButton').on('click', function(e){
+    	var wirlessContainerTemplate = '<div id="wirelessSSID-container">\
+									  		<ul class="list-group">\
+									  		</ul>\
+							  			</div>';
+
+		
+    });
 });

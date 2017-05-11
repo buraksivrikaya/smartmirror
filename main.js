@@ -118,39 +118,46 @@ var webApp = express();
 
 webApp.use(express.static('www'));
 webApp.listen(8000, function(){
-    console.log('listening...');
+    console.log('smart mirror is listening from port 8000...');
 });
 
 
 webApp.get('/login', function (req, res) {
-    console.log("giris yapma");
     var data = req.query;
 
-    if(fs.existsSync('data/'+data.id+'.json')){
+    if(fs.existsSync('data/'+data.id+'.json')){//id, password, [id,isadmin]
         var userSettings = JSON.parse(fs.readFileSync('./data/'+data.id+'.json'));
         if(userSettings.password == data.password){
             var response = [data.id, userSettings.isAdmin];
-            console.log(response);
-            console.log(JSON.stringify(response));
             res.send(JSON.stringify(response));
         }
         else{
-            console.log("2");
-            res.send("2");
+            res.send("2");//wrong password
         }
     }
     else{
-        console.log("1")
-        res.send("1")
+        res.send("1");//no username
         
     }
     res.end();
 });
 
+webApp.get('/getUserSettings', function (req, res) {//id, [gmail, twitter]
+    var data = req.query;  
+    var userData = JSON.parse(fs.readFileSync('./data/'+ data.id + '.json'));
+    var user = {};
+    user.gmail = userData.gmailAuth != null ? 1 : 0;
+    user.twitter = userData.twitterAuth != null ? 1 : 0;
+    user.id = data.userid;
 
-webApp.get('/getUsers', function (req, res) {
+    res.send(JSON.stringify(user));
+
+    res.end();
+});
+
+webApp.get('/getUsers', function (req, res) {//[{userid, gmail, twitter}]
     var userList = JSON.parse(fs.readFileSync('./data/user-meta.json'));
-    var pureUserList = [];//[{userid, gmail, twitter}}
+    var pureUserList = [];
 
     userList.forEach(function(item,index){
         var userData = JSON.parse(fs.readFileSync('./data/'+ item));
@@ -165,9 +172,7 @@ webApp.get('/getUsers', function (req, res) {
     res.end();
 });
 
-
-
-webApp.get('/removeUser', function (req, res) { //burada imgs klasörünü de sil 
+webApp.get('/removeUser', function (req, res) {//SHOULD ALSO DELETE IMGS FOLDER //id,
     console.log("kullanici sil " + req.query.id);
     fs.unlinkSync('./data/'+req.query.id+'.json');
     var userList = JSON.parse(fs.readFileSync('./data/user-meta.json'));

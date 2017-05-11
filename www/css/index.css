@@ -20,11 +20,20 @@
 }
 
 .authIcon{
-	margin-left:5px;
+	margin-left: 6px;
+	margin-right: 6px;
 }
 .fa-twitter{
 	color:#4099FF;
 }
 .fa-envelope-o{
 	color: #892229;
+}
+.grantedIcon{
+	margin-left: 10px;
+}
+
+.authButton{
+	margin-left: 8px;
+	padding:5px;
 }

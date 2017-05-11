@@ -7,7 +7,7 @@ let win;
 
 function createWindow() {
     // Create the browser window.
-    win = new BrowserWindow({width:"200px", height:"200px"});
+    win = new BrowserWindow({ width: "200px", height: "200px" });
     //win.setFullScreen(true);
     // and load the index.html of the app.
     win.loadURL(url.format({
@@ -121,7 +121,7 @@ var webApp = express();
 
 webApp.use(express.static('www'));
 webApp.use(cookieParser());
-webApp.listen(8000, function(){
+webApp.listen(8000, function () {
     console.log('smart mirror is listening from port 8000...');
 });
 
@@ -129,28 +129,28 @@ webApp.listen(8000, function(){
 webApp.get('/login', function (req, res) {
     var data = req.query;
 
-    if(fs.existsSync('data/'+data.id+'.json')){//id, password, [id,isadmin]
-        var userSettings = JSON.parse(fs.readFileSync('./data/'+data.id+'.json'));
-        if(userSettings.password == data.password){
+    if (fs.existsSync('data/' + data.id + '.json')) {//id, password, [id,isadmin]
+        var userSettings = JSON.parse(fs.readFileSync('./data/' + data.id + '.json'));
+        if (userSettings.password == data.password) {
             // set user cookie for later usage
-            res.cookie(cookie_name , data.id);
+            res.cookie(cookie_name, data.id);
             var response = [data.id, userSettings.isAdmin];
             res.send(JSON.stringify(response));
         }
-        else{
+        else {
             res.send("2");//wrong password
         }
     }
-    else{
+    else {
         res.send("1");//no username
-        
+
     }
     res.end();
 });
 
 webApp.get('/getUserSettings', function (req, res) {//id, [gmail, twitter]
-    var data = req.query;  
-    var userData = JSON.parse(fs.readFileSync('./data/'+ data.id + '.json'));
+    var data = req.query;
+    var userData = JSON.parse(fs.readFileSync('./data/' + data.id + '.json'));
     var user = {};
     user.gmail = userData.gmailAuth != null ? 1 : 0;
     user.twitter = userData.twitterAuth != null ? 1 : 0;
@@ -164,8 +164,8 @@ webApp.get('/getUsers', function (req, res) {//[{userid, gmail, twitter}]
     var userList = JSON.parse(fs.readFileSync('./data/user-meta.json'));
     var pureUserList = [];
 
-    userList.forEach(function(item,index){
-        var userData = JSON.parse(fs.readFileSync('./data/'+ item));
+    userList.forEach(function (item, index) {
+        var userData = JSON.parse(fs.readFileSync('./data/' + item));
         var user = {};
         user.gmail = userData.gmailAuth != null ? 1 : 0;
         user.twitter = userData.twitterAuth != null ? 1 : 0;
@@ -179,9 +179,53 @@ webApp.get('/getUsers', function (req, res) {//[{userid, gmail, twitter}]
 
 webApp.get('/removeUser', function (req, res) {//SHOULD ALSO DELETE IMGS FOLDER //id,
     console.log("kullanici sil " + req.query.id);
-    fs.unlinkSync('./data/'+req.query.id+'.json');
+    fs.unlinkSync('./data/' + req.query.id + '.json');
     var userList = JSON.parse(fs.readFileSync('./data/user-meta.json'));
-    userList.splice(userList.indexOf(req.query.id+'.json'), 1);
+    userList.splice(userList.indexOf(req.query.id + '.json'), 1);
     fs.writeFileSync('./data/user-meta.json', JSON.stringify(userList));
     res.end();
+});
+
+var cmd = require('node-cmd');
+//cmd.run('touch example.created.file');
+var wirelessDev = 'wlp5s0';
+
+//getAsync('iwlist '+ wirelessDev +' scan | egrep "Cell |Quality|ESSID"').then(data => {
+/*
+ 
+console.log(unparsedList.length);
+*/
+
+
+
+webApp.get('/getWirelessList', function (req, res) {//SHOULD ALSO DELETE IMGS FOLDER //id,
+    var wirelessList = [];
+    cmd.get(
+        //'iwlist '+ wirelessDev +' scan | egrep "Cell |Quality|ESSID"',
+        'nmcli -f BARS,SSID dev wifi list',
+        function (err, data, stderr) {
+            var parsedList = [];
+            if (!err) {
+                if (data) {
+                    unparsedList = data.split('\n');
+
+                    for (var i = 1; i < unparsedList.length - 1; i++) {
+                        var power = unparsedList[i].substring(0, 4);
+                        var ssid = unparsedList[i].substring(5, unparsedList[1].length).replace(/\s+/g, "");
+                        wirelessList.push({ "power": power, "ssid": ssid });
+                    }
+
+
+                    console.log(wirelessList); 
+                    res.send(JSON.stringify(wirelessList));
+                    res.end();
+
+                } else {
+                    console.log('error', err);
+                }
+
+            }
+        });
+
+    
 });

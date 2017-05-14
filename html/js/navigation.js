@@ -61,8 +61,11 @@ $(document).ready(function () {
 		    },300);
 		});
 	});
+	
+	var canGest = true;
 
 	gest.options.subscribeWithCallback(function (gesture) {
+		if(canGest){canGest = false;
 		var dir = gesture.direction;
 		console.log(dir);
 		//console.log(dir);
@@ -72,6 +75,7 @@ $(document).ready(function () {
 			window.setTimeout(function (a) {
 				console.log(a);
 				FaceUtilAddon.startListening();
+				canGest = true;
 			}, 150);
 		}
 		else if (faceDetected == 1) {
@@ -161,8 +165,9 @@ $(document).ready(function () {
 					onMailList = 1;
 					$('#mailModalCloseButton').click();
 				}
-			}, 1500);
-		}
+				canGest = true;
+			}, 1000);
+		}}
 		//gest.stop();
 	});
 
@@ -198,6 +203,11 @@ $(document).ready(function () {
 					});
 					console.log("ÇIKIŞ BUTONUNA BASILDI");
 
+				});
+			}
+			else if($(_self).data("type")=="twitter"){
+				$('#twitterList').ready(function(){
+					setTweets([1,2,3,4,5,6,7,8,9,10,11,12,13]);
 				});
 			}
 			else if($(_self).data("type")=="mails"){

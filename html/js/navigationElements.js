@@ -53,7 +53,6 @@ var navigationContents = {
 
     twitter : '<div class="contentAreaElement" hidden>\
           		 <div id="twitterList" class="container" style="border: 1px solid">\
-          		 	<div class="row"></div>\
 				 </div>\
      		 </div>',
 
@@ -80,4 +79,36 @@ var setMails = function(mails) {
 	mailList = mails;
 	console.log("mailler : ");
 	console.log(mails);
+}
+
+
+
+var setTweets = function(tweets){
+	tweetCount = tweets.length; console.log("basmasi gereken tweet miktari " + tweetCount);
+	var countForRow = 3; //twit count for each row, (max 12)
+	var rowCount =  Math.ceil(tweetCount / countForRow);
+	var temp = '';
+	var tweetIndex = 0;
+	for(var i=0; i<rowCount; i++){
+		temp += '<div class="row" data-rowid='+i+'>';
+		for(var n=0; n<countForRow; n++){
+			if(tweets[tweetIndex]){
+				temp+='<div class="tweetCell col-md-'+12 / countForRow+'">\
+					<div class="tweetText">text</div>\
+					<div class="tweetName">name</div>\
+					<div class="tweetDate">date'+tweetIndex+'</div>\
+				</div>'
+				tweetIndex++;
+				console.log(tweetIndex);
+			}
+			else{
+				break;
+			}
+		}
+
+		temp += '</div>';
+	}
+
+	$('#twitterList').html(temp);
+	console.log("pushed");
 }

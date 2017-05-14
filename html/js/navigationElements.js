@@ -1,9 +1,8 @@
 var navigationElements = {
 	home: 'Ev',
-	rss: 'RSS',
+	twitter: 'Twitter',
 	mails: 'E-Posta',
-	calendar: 'Ajanda',
-	baskabisi: 'testüğşöç'
+	quit: 'Çıkış'
 }
 
 var mailList = [];
@@ -23,12 +22,12 @@ var createNavigationMailItem = function(index, from, date, subject, content){
 		</span><span class="mailDate">'+ date +'</span></li>';
 	}
 };
-var getNavigationMails = function(){
+var getNavigationMails = function(mails){
 	var template = '';
-	for(var index = 0; index < mailList.length ; index++){
-		var from = mailList[index].sender;
-		var date = mailList[index].date;
-		template += createNavigationMailItem(index, from , date, mailList[index].subject, mailList[index].html);
+	for(var index = 0; index < mails.length ; index++){
+		var from = mails[index].sender;
+		var date = mails[index].date;
+		template += createNavigationMailItem(index, from , date, mails[index].subject, mails[index].html);
 	}
 	
 
@@ -47,12 +46,23 @@ var navigationContents = {
 			versions of Lorem Ipsum.\
       </div>',
 
-      mails : '<div class="contentAreaElement" hidden>\
+    mails : '<div class="contentAreaElement" hidden>\
           		 <ul id="mailList" class="list-group">'/*+ getNavigationMails() */+'\
 				 </ul>\
      		 </div>',
 
-      underConstruction : '<div class="contentAreaElement" hidden>\
+    twitter : '<div class="contentAreaElement" hidden>\
+          		 <div id="twitterList" class="container" style="border: 1px solid">\
+				 </div>\
+     		 </div>',
+
+    quit : '<div class="contentAreaElement" hidden>\
+          		 <div id="quit" class="container">\
+          		 <p>Çıkış yapmak için aşağı kaydırınız..</p>\
+				 </div>\
+     		 </div>',
+
+    underConstruction : '<div class="contentAreaElement" hidden>\
           <h1>Under Construction</h1>\
 	  </div>'
 };
@@ -60,77 +70,13 @@ var navigationContents = {
 var getNavigationHtml = function(dataType){
 	if(dataType === "home"){return navigationContents.home;}
 	else if(dataType === "mails"){return navigationContents.mails;}
+	else if(dataType === "twitter"){return navigationContents.twitter;}
+	else if(dataType === "quit"){return navigationContents.quit;}
 	else{return navigationContents.underConstruction;}
 };
 
-var onMailRead = function(mails) {
+var setMails = function(mails) {
 	mailList = mails;
-	renderMails();
+	console.log("mailler : ");
+	console.log(mails);
 }
-
-
-// //MAIL START
-// //var htmlToText = require('html-to-text');
-// var Imap = require('imap'),
-//     inspect = require('util').inspect;
-
-// var simpleParser = require("mailparser").simpleParser;
-
-// var imap = new Imap({
-//   user: '*@gmail.com',
-//   password: '*',
-//   host: 'imap.gmail.com',
-//   port: 993,
-//   tls: true,
-//   //params: { charset: 'utf8' }
-// });
-
-// function openInbox(cb) {
-//   imap.openBox('INBOX', true, cb);
-// }
-
-// imap.once('ready', function() {
-// 	openInbox(function(err, box) {
-// 		if (err) throw err;
-
-// 		var mailEnd = 15; //Default 15 mails
-// 		(box.messages.total-mailEnd) < 0 ? mailEnd = 0 : mailEnd = box.messages.total-mailEnd+1;
-// 		var f = imap.seq.fetch(box.messages.total + ':' + mailEnd, { bodies: '' });
-// 		f.on('message', function(msg, seqno) {
-// 			var prefix = '(#' + seqno + ') ';
-// 			msg.on('body', function(stream, info) {
-// 				var buffer = '';
-// 				stream.on('data', function(chunk) {
-// 					buffer += chunk.toString('utf8');
-// 					//console.log(chunk);
-// 					//buffer += utf8.decode(chunk);
-// 					//buffer += new String(chunk, "utf8");
-// 				});
-
-// 				stream.once('end', function() {
-// 				    simpleParser(buffer, (err, mail)=>{
-//                         if(mail.date != null){
-//                         	mailList.push(mail);
-//                         }
-//                     });
-// 				});
-// 			});
-// 		});
-// 		f.once('error', function(err) {
-// 			console.log('Fetch error: ' + err);
-// 			errorMessage = 'Fetch error: ' + err;
-// 		});
-// 		f.once('end', function() {
-// 			imap.end();
-// 		});
-// 	});
-// });
-// imap.once('error', function(err) {
-//   console.log(err);
-//   errorMessage = err;
-// });
-// imap.once('end', function() {
-// 	imap.end();
-// });
-// imap.connect();
-// //MAIL END

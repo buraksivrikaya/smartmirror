@@ -8,8 +8,11 @@ $(document).ready(function () {
 	var index = 0;
 	var faceDetected = 0;
 	var onMails = 0;
+	var onTwits = 0;
+	var onQuit = 0;
 	var onMailList = 0;
 	var mailReading = 0;
+	var mailInterval;
 	let gs;
 	const FaceUtilAddon = require('../build/Release/FaceUtilAddon');
 
@@ -36,12 +39,18 @@ $(document).ready(function () {
 		console.log(loggedUser);
 		gs = new GmailService(loggedUser);
 
+		gs.readMail(15).then(setMails);//giriş yaptıktan sonra mailleri çekiyor
+
+		mailInterval = setInterval(function () {//her 3 dk da bir mailleri tekrar çekiyor
+			gs.readMail(15).then(setMails);
+		}, 3*60*1000);
+
 		faceDetected = 1;
 		FaceUtilAddon.stopListening(); //bunu kaldırırsan surekli dinler
 
 		
 		    
-	    $("#notificationLogin").append(msg + ' hoşgeldin...');
+	    $("#notificationLogin").html(msg + ' hoşgeldin...');
 	    $("#notificationLogin").fadeIn("slow", function() {
 			window.setTimeout(function(){
 				$("#notificationLogin").fadeOut( "slow", function() {
@@ -81,13 +90,36 @@ $(document).ready(function () {
 					if ($($('.navigationElement')[index]).data("type") === 'mails') {
 						onMails = 1;
 						console.log('MAIL USTUNDE');
-						//burada okumaya başla diyorum
-						//okuma bitince onmailReada geliyor
-						gs.readMail(15).then(onMailRead);
+						onTwits = 0;
+						onQuit = 0;
+					}
+
+					else if ($($('.navigationElement')[index]).data("type") === 'twitter') {
+						onTwits = 1;
+						console.log('TWIT USTUNDE');
+						//twitleri render et
+						onMails = 0;
+						onQuit = 0;
+					}
+					else if ($($('.navigationElement')[index]).data("type") === 'quit') {
+						onQuit = 1;
+						console.log('ÇIKIŞ USTUNDE');
+						onMails = 0;
+						onTwits = 0;
 					}
 					else {
 						onMails = 0;
+						onTwits = 0;
+						onQuit = 0;
 					}
+				}
+				else if (onQuit == 1 && (dir == 'Long down' || dir == 'Down')) {
+					onMailList = 0;
+					onMails = 0;
+					
+					$('#quit').click();
+
+					console.log('ÇIKIŞ YAP');
 				}
 				else if (onMails == 1 && (dir == 'Long down' || dir == 'Down')) {
 					onMailList = 1;
@@ -135,6 +167,7 @@ $(document).ready(function () {
 	});
 
 	$('.navigationElement').on('click', function () {
+		var _self = this;
 		$('.highlighted').removeClass('highlighted');
 		$(this).addClass('highlighted');
 		$('#contentArea').append(getNavigationHtml($(this).data("type")));
@@ -142,35 +175,57 @@ $(document).ready(function () {
 			this.remove();
 			$($('#contentArea').children(":last")).fadeIn(150), function () {
 				if ($('#contentArea').children().length > 1) {
-					for (var i = -1; i < $('#contentArea').children().length; i++) {
+					for (var i = 0; i < $('#contentArea').children().length-1; i++) {
 						$($('#contentArea').children()[i]).remove();
 					}
 				}
 			};
 		});
-		renderMails = function () {
-			console.log("here");
-			$($('#mailList')[0]).html(getNavigationMails()).promise().done(function () {
-				$('.mail').on('click', function () {
-					console.log("MAIL CLICKED");
-					if (mailReading == 1) {
-						var indexOfMail = $('.selected').data('mailindex');
-						$('#mailModal .modal-title').html(mailList[indexOfMail].sender);
 
-						$('#mailModal .modal-title-date').html(mailList[indexOfMail].date);
-						$('#mailModal .modal-body-subject').html(mailList[indexOfMail].subject);
-						$('#mailModal .modal-body-content').html(mailList[indexOfMail].contentHtml);
-						$('#mailModal').modal('show');
-					}
-					else {
-						$('.selected').removeClass('selected');
-						$(this).addClass('selected');
-					}
+
+		$('#contentArea').ready(function(){
+			if($(_self).data("type")=="quit"){
+				$('#quit').on('click', function(e){
+					e.preventDefault();
+					index = 0;
+					faceDetected = 0;
+					onMails = 0;
+					onTwits = 0;
+					onQuit = 0;
+					clearInterval(mailInterval);
+					$( "#BodyElements" ).fadeOut("slow", function(){
+						$($('.navigationElement')[index]).click();
+					});
+					console.log("ÇIKIŞ BUTONUNA BASILDI");
+
 				});
-			});
-		}
+			}
+			else if($(_self).data("type")=="mails"){
+				//gs.readMail(15).then(setMails);
+				if(mailList.length > 0){
+					$($('#mailList')[0]).html(getNavigationMails(mailList)).promise().done(function () {
+						$('.mail').on('click', function () {
+							console.log("MAIL CLICKED");
+							if (mailReading == 1) {
+								var indexOfMail = $('.selected').data('mailindex');
+								$('#mailModal .modal-title').html(mailList[indexOfMail].sender);
+								$('#mailModal .modal-title-date').html(mailList[indexOfMail].date);
+								$('#mailModal .modal-body-subject').html(mailList[indexOfMail].subject);
+								$('#mailModal .modal-body-content').html(mailList[indexOfMail].contentHtml);
+								$('#mailModal').modal('show');
+							}
+							else {
+								$('.selected').removeClass('selected');
+								$(this).addClass('selected');
+							}
+						});
+					});
+				}
+				else{
+					$('#contentArea').html('<p style="margin-right: auto; margin-left:auto">Gösterilecek mail yok</p>');
+				}
+			}
+
+		});
 	});
 });
-/*$( "#book" ).fadeOut( "slow", function() {
-    // Animation complete.
-  });*/

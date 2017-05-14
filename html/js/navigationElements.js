@@ -53,6 +53,7 @@ var navigationContents = {
 
     twitter : '<div class="contentAreaElement" hidden>\
           		 <div id="twitterList" class="container" style="border: 1px solid">\
+          		 	<div class="row"></div>\
 				 </div>\
      		 </div>',
 

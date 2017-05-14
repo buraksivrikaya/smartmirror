@@ -222,14 +222,25 @@ $(document).ready(function () {
 
                                                 $('#ssidPassModal').modal("show");
                                                 $('#connectSSID').on('click', function(b){
-                                                    b.preventDefault();//bu bi boka yaramiyo burda :D
-                                                    console.log("sifre : " + $('#wirelessPassword').val());
+                                                    b.preventDefault();
+
                                                     var password = $('#wirelessPassword').val();
+                                                    $.notify(currentSSID + ' ağına bağlanılıyor. Lütfen Bekleyiniz', { className: "notify", showDuration: "300", autoHide: true, globalPosition: "top right" });
+       
                                                     $.ajax({
                                                         url: "./connectNetwork",
                                                         data: { ssid: currentSSID, password: password},
                                                         success: function (result) {
+                                                        	if(result.indexOf("Error") > -1){
+                                                                $.notify('Bağlantı başarısız', { className: "error", showDuration: "500", autoHide: true, globalPosition: "top right" });
+                                                                $('#ssidPassModal').modal("hide");
+                                                        	}
 
+                                                        	else{
+                                                        		$('#ssidPassModal').modal("hide");
+                                                                $.notify('Bağlantı başarılı.', { className: "success", showDuration: "500", autoHide: true, globalPosition: "top right" });
+       
+                                                        	}
                                                         }
                                                     });
 

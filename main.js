@@ -222,13 +222,12 @@ webApp.get('/connectNetwork', function (req, res) {//SHOULD ALSO DELETE IMGS FOL
     var ssid = req.query.ssid;
     var pass = req.query.password;
 
-    cmd.run('sudo nmcli device wifi connect '+ ssid +' password '+ pass);
-    /*
+    //cmd.run('sudo nmcli device wifi connect '+ ssid +' password '+ pass);
+    
     cmd.get(
         //'sudo iwconfig wlp5s0 essid ' + ssid + ' key s:' + pass, //tamam kolay gelsin. buraya göre baglancak iste bu. denerim ben
         'nmcli device wifi connect '+ ssid +' password '+ pass,
         function (err, data, stderr) {
-            var parsedList = [];
             if (!err) {
                 if (data) {
                     console.log(data);
@@ -240,6 +239,6 @@ webApp.get('/connectNetwork', function (req, res) {//SHOULD ALSO DELETE IMGS FOL
                 }
 
             
-        }); */
+        }); 
 
 });

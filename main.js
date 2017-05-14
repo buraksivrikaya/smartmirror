@@ -210,10 +210,10 @@ webApp.get('/getWirelessList', function (req, res) {//SHOULD ALSO DELETE IMGS FO
                     res.send(JSON.stringify(wirelessList));
                     res.end();
 
-                } else {
-                    console.log('error', err);
                 }
-
+            }
+            else {
+                    console.log('error', err);
             }
         }); 
 });

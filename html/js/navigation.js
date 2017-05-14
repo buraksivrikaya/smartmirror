@@ -14,6 +14,7 @@ $(document).ready(function () {
 	var mailReading = 0;
 	var mailInterval;
 	let gs;
+	let loggedUser;
 	const FaceUtilAddon = require('../build/Release/FaceUtilAddon');
 
 	FaceUtilAddon.loadFaceDetector("data/lbpcascade_frontalface.xml");
@@ -35,8 +36,10 @@ $(document).ready(function () {
 		msg = "burak2";      
 		console.log(msg);
 
-		let loggedUser = User.loadFrom("data/" + msg + ".json");
+		loggedUser = User.loadFrom("data/" + msg + ".json");
 		console.log(loggedUser);
+		setNotificationUserName(loggedUser.id);
+
 		gs = new GmailService(loggedUser);
 
 		gs.readMail(15).then(setMails);//giriş yaptıktan sonra mailleri çekiyor
@@ -61,14 +64,14 @@ $(document).ready(function () {
 		    },300);
 		});
 	});
-	
+
 	var canGest = true;
 
 	gest.options.subscribeWithCallback(function (gesture) {
 		if(canGest){canGest = false;
 		var dir = gesture.direction;
 		console.log(dir);
-		//console.log(dir);
+		setGestureDirectionShow(dir);
 		if (faceDetected == 0 && dir === "Right") {
 			console.log("faceDetection geç");
 			gest.stop();
@@ -165,9 +168,13 @@ $(document).ready(function () {
 					onMailList = 1;
 					$('#mailModalCloseButton').click();
 				}
+
 				canGest = true;
 			}, 1000);
-		}}
+		}else{
+			canGest = true;
+			}
+	}
 		//gest.stop();
 	});
 
@@ -197,6 +204,7 @@ $(document).ready(function () {
 					onMails = 0;
 					onTwits = 0;
 					onQuit = 0;
+					loggedUser = null;
 					clearInterval(mailInterval);
 					$( "#BodyElements" ).fadeOut("slow", function(){
 						$($('.navigationElement')[index]).click();

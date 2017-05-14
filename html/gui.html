@@ -10,6 +10,7 @@
     <!-- Bootstrap -->
     <link href="lib/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/gui.css" rel="stylesheet">
+    <link href="css/font-awesome.min.css" rel="stylesheet">
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script>window.$ = window.jQuery = require('jquery');</script>
     <!--<script src="../scripts/gest.min.js"></script> -->
@@ -20,6 +21,7 @@
     <script src="js/notificationElements.js"></script>
     <script src="js/navigationElements.js"></script>
     <script src="js/navigation.js"></script>
+    <script src="js/notification.js"></script>
 
   </head>
   <body>
@@ -28,9 +30,9 @@
   	<div id="notificationArea">
         
       <script>
-        $.each(notificationElements, function( index, value ) {
+        $.each(notificationElements, function( key, value ) {
           $("#notificationArea").append(
-            '<div class="notificationElement">' + value + '</div>'
+            '<div class="notificationElement" data-type='+ key +'>' +value + '</div>'
           );
         });
       </script>

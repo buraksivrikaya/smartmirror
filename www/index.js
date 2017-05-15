@@ -143,7 +143,6 @@ $(document).ready(function () {
 
     });
 
-
     $('#settingsMenuButton').on('click', function (e) {
         console.log("settings menu clicked");
         var grantedTemplate = '<i class="fa fa-check-circle-o grantedIcon" aria-hidden="true"></i>';
@@ -151,10 +150,10 @@ $(document).ready(function () {
         var settingsListTemplate = '<ul class="list-group">\
 							        <li class="list-group-item" id="gmailAuth"><i class="fa fa-envelope-o authIcon"></i>Gmail\
 							        	<a href="http://localhost:3000/auth/gmail" class="btn btn-info authButton" role="button">Giriş</a>\
-							        	<a class="btn btn-danger authButton" role="button">İptal</a></li>\
+							        	<a class="btn btn-danger authButton" role="button" href="http://localhost:8000/removeGmail">İptal</a></li>\
 							        <li class="list-group-item" id=twitterAuth><i class="fa fa-twitter authIcon"></i>Twitter\
 							        	<a href="http://localhost:3000/auth/twitter"class="btn btn-info authButton" role="button">Giriş</a>\
-							        	<a class="btn btn-danger authButton" role="button">İptal</a></li></li></ul>';
+							        	<a class="btn btn-danger authButton" role="button" href="http://localhost:8000/removeTwitter">İptal</a></li></li></ul>';
 
 
         $('#container').html(settingsListTemplate);

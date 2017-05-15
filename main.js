@@ -79,16 +79,21 @@ let gauthConfig = new GmailAuthConfig(
 
 Authorizer.registerGmailAuthOn(gauthConfig, "/auth/gmail", function (auth, req) {
     // Now we have authorization
-    // let user = new User(2, "test");
-    // user.setGmailAuth(auth);
     // Save it for later usage...
-    // user.saveTo("data/test2GMAIL.json");
-    console.log(req.cookies[cookie_name]);
+    if(req.cookies[cookie_name]) {
+        let id = req.cookies[cookie_name];
+        console.log(id);
+        let tuser = User.loadFrom("data/" + id + ".json" );
+        tuser.setGmailAuth(auth);
+        tuser.saveTo("data/" + id + ".json");
+    } else {
+        console.log("there were none");
+    }
+    // console.log(req.cookies[cookie_name]);
 });
 
-//let tconfig = JSON.parse(fs.readFileSync("data/tconfig.json"));
+let tconfig = JSON.parse(fs.readFileSync("data/tconfig.json"));
 
-/*
 let tauthConfig = new TwitterAuthConfig(
     tconfig["consumerKey"],
     tconfig["consumerSecret"],
@@ -97,12 +102,17 @@ let tauthConfig = new TwitterAuthConfig(
 
 Authorizer.registerTwitterAuthOn(tauthConfig, "/auth/twitter", function (auth, req) {
     // Now we have authorization
-    let user = new User(2, "test");
-    user.setTwitterAuth(auth);
     // Save it for later usage...
-    user.saveTo("data/test2TWITTER.json");
+    if(req.cookies[cookie_name]) {
+        let id = req.cookies[cookie_name];
+        let tuser = User.loadFrom("data/" + id + ".json" );
+        tuser.setTwitterAuth(auth);
+        tuser.saveTo("data/" + id + ".json");
+    } else {
+        console.log("there were none");
+    }
+    // console.log(req.cookies[cookie_name]);
 });
-*/
 
 Authorizer.listenOn(3000);
 

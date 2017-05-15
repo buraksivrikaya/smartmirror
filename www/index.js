@@ -12,6 +12,9 @@ $(document).ready(function () {
         $('#loginAreaButton').addClass('hidden');
         $('#settingsMenuButton').removeClass('hidden');
         $('#loggedInSettingsMenu').removeClass('hidden');
+
+        // set js accessible cookie
+        document.cookie = "smloggeduser=" + userName;
     } else {
         $('#logOutButton').addClass('hidden');
         $('#loginAreaButton').removeClass('hidden');

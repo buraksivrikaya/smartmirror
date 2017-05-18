@@ -79,16 +79,21 @@ let gauthConfig = new GmailAuthConfig(
 
 Authorizer.registerGmailAuthOn(gauthConfig, "/auth/gmail", function (auth, req) {
     // Now we have authorization
-    // let user = new User(2, "test");
-    // user.setGmailAuth(auth);
     // Save it for later usage...
-    // user.saveTo("data/test2GMAIL.json");
-    console.log(req.cookies[cookie_name]);
+    if (req.cookies[cookie_name]) {
+        let id = req.cookies[cookie_name];
+        console.log(id);
+        let tuser = User.loadFrom("data/" + id + ".json");
+        tuser.setGmailAuth(auth);
+        tuser.saveTo("data/" + id + ".json");
+    } else {
+        console.log("there were none");
+    }
+    // console.log(req.cookies[cookie_name]);
 });
 
-//let tconfig = JSON.parse(fs.readFileSync("data/tconfig.json"));
+let tconfig = JSON.parse(fs.readFileSync("data/tconfig.json"));
 
-/*
 let tauthConfig = new TwitterAuthConfig(
     tconfig["consumerKey"],
     tconfig["consumerSecret"],
@@ -97,12 +102,17 @@ let tauthConfig = new TwitterAuthConfig(
 
 Authorizer.registerTwitterAuthOn(tauthConfig, "/auth/twitter", function (auth, req) {
     // Now we have authorization
-    let user = new User(2, "test");
-    user.setTwitterAuth(auth);
     // Save it for later usage...
-    user.saveTo("data/test2TWITTER.json");
+    if (req.cookies[cookie_name]) {
+        let id = req.cookies[cookie_name];
+        let tuser = User.loadFrom("data/" + id + ".json");
+        tuser.setTwitterAuth(auth);
+        tuser.saveTo("data/" + id + ".json");
+    } else {
+        console.log("there were none");
+    }
+    // console.log(req.cookies[cookie_name]);
 });
-*/
 
 Authorizer.listenOn(3000);
 
@@ -213,9 +223,9 @@ webApp.get('/getWirelessList', function (req, res) {//SHOULD ALSO DELETE IMGS FO
                 }
             }
             else {
-                    console.log('error', err);
+                console.log('error', err);
             }
-        }); 
+        });
 });
 
 webApp.get('/connectNetwork', function (req, res) {//SHOULD ALSO DELETE IMGS FOLDER //id,
@@ -223,10 +233,10 @@ webApp.get('/connectNetwork', function (req, res) {//SHOULD ALSO DELETE IMGS FOL
     var pass = req.query.password;
 
     //cmd.run('sudo nmcli device wifi connect '+ ssid +' password '+ pass);
-    
+
     cmd.get(
         //'sudo iwconfig wlp5s0 essid ' + ssid + ' key s:' + pass, //tamam kolay gelsin. buraya göre baglancak iste bu. denerim ben
-        'nmcli device wifi connect '+ ssid +' password '+ pass,
+        'nmcli device wifi connect ' + ssid + ' password ' + pass,
         function (err, data, stderr) {
             if (!err) {
                 if (data) {
@@ -235,10 +245,31 @@ webApp.get('/connectNetwork', function (req, res) {//SHOULD ALSO DELETE IMGS FOL
                     res.end();
                 }
             } else {
-                    console.log('error', err);
-                }
+                console.log('error', err);
+            }
+        });
+});
 
-            
-        }); 
+webApp.get("/removeGmail", function(req, res) {
+    if (req.cookies[cookie_name]) {
+        let id = req.cookies[cookie_name];
+        let tuser = User.loadFrom("data/" + id + ".json");
+        delete tuser.gmailAuth;
+        tuser.saveTo("data/" + id + ".json");
+    } else {
+        console.log("there were none");
+    }
+    res.redirect("http://localhost:8000");
+});
 
+webApp.get("/removeTwitter", function(req, res) {
+    if (req.cookies[cookie_name]) {
+        let id = req.cookies[cookie_name];
+        let tuser = User.loadFrom("data/" + id + ".json");
+        delete tuser.twitterAuth;
+        tuser.saveTo("data/" + id + ".json");
+    } else {
+        console.log("there were none");
+    }
+    res.redirect("http://localhost:8000");
 });

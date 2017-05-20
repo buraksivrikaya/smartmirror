@@ -3,9 +3,10 @@ var navigationElements = {
 	twitter: 'Twitter',
 	mails: 'E-Posta',
 	quit: 'Çıkış'
-}
+};
 
 var mailList = [];
+var tweetList = [];
 var errorMessage = 'none';
 var getNavigationElements = function(){
 	return navigationElements;
@@ -22,6 +23,7 @@ var createNavigationMailItem = function(index, from, date, subject, content){
 		</span><span class="mailDate">'+ date +'</span></li>';
 	}
 };
+
 var getNavigationMails = function(mails){
 	var template = '';
 	for(var index = 0; index < mails.length ; index++){
@@ -29,10 +31,9 @@ var getNavigationMails = function(mails){
 		var date = mails[index].date;
 		template += createNavigationMailItem(index, from , date, mails[index].subject, mails[index].html);
 	}
-	
-
 	return template;
 };
+
 var navigationContents = {
 	home : '<div class="contentAreaElement" hidden>\
           <h1>What is Lorem Ipsum?</h1>\
@@ -52,7 +53,7 @@ var navigationContents = {
      		 </div>',
 
     twitter : '<div class="contentAreaElement" hidden>\
-          		 <div id="twitterList" class="container" style="border: 1px solid">\
+          		 <div id="twitterList" class="container">\
 				 </div>\
      		 </div>',
 
@@ -77,38 +78,40 @@ var getNavigationHtml = function(dataType){
 
 var setMails = function(mails) {
 	mailList = mails;
-	console.log("mailler : ");
-	console.log(mails);
-}
-
-
+};
 
 var setTweets = function(tweets){
-	tweetCount = tweets.length; console.log("basmasi gereken tweet miktari " + tweetCount);
-	var countForRow = 3; //twit count for each row, (max 12)
-	var rowCount =  Math.ceil(tweetCount / countForRow);
-	var temp = '';
-	var tweetIndex = 0;
-	for(var i=0; i<rowCount; i++){
-		temp += '<div class="row" data-rowid='+i+'>';
-		for(var n=0; n<countForRow; n++){
-			if(tweets[tweetIndex]){
-				temp+='<div class="tweetCell col-md-'+12 / countForRow+'">\
-					<div class="tweetText">text</div>\
-					<div class="tweetName">name</div>\
-					<div class="tweetDate">date'+tweetIndex+'</div>\
-				</div>'
-				tweetIndex++;
-				console.log(tweetIndex);
+	tweetList = tweets;
+};
+
+var renderTweets = function(){
+	var tweets = tweetList;
+	if(tweets.length > 0){
+		tweetCount = tweets.length;
+		var countForRow = 3; //twit count for each row, (max 12)
+		var rowCount =  Math.ceil(tweetCount / countForRow);
+		var temp = '';
+		var tweetIndex = 0;
+		for(var i=0; i<rowCount; i++){
+			temp += '<div class="row" data-rowid='+i+'>';
+			for(var n=0; n<countForRow; n++){
+				if(tweets[tweetIndex]){
+					temp+='<div class="tweetCell col-md-'+12 / countForRow+'">\
+						<div class="tweetName">@'+ tweets[tweetIndex].sender +'</div>\
+						<div class="tweetText">'+ tweets[tweetIndex].text +'</div>\
+						<div class="tweetDate">'+ tweets[tweetIndex].date + '</div>\
+					</div>'
+					tweetIndex++;
+				}
+				else{
+					break;
+				}
 			}
-			else{
-				break;
-			}
+			temp += '</div>';
 		}
-
-		temp += '</div>';
+		$('#twitterList').html(temp);
 	}
-
-	$('#twitterList').html(temp);
-	console.log("pushed");
-}
+	else{
+		$('#contentArea').html('<div class="nothingToShow"><p>Gösterilecek tweet yok...</p></div>');
+	}
+};

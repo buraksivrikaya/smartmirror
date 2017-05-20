@@ -1,11 +1,9 @@
-.clearFloat {
-  clear: both;			
-}
 body{
 	background: black;
 	color: white;
 	padding: 20px;
 }
+
 #notificationArea{
 	width: 100%;
 	height: auto;
@@ -32,16 +30,11 @@ body{
 	display: inline-block;
 	margin: 0px 0px 0px 20px;
 }
+
 #seperator{
 	margin-top:5px;
 	margin-left: 20px;
 	margin-right: 20px;
-}
-
-iframe #agenda *{
-	background : black;
-	color: white;
-	border: none;
 }
 
 .highlighted {
@@ -57,21 +50,26 @@ iframe #agenda *{
 	margin-left: 20px;
 	margin-right: 20px;
 }
+
 #mailList *{
 	background: black;
 	border: none;
 }
+
 .mailFrom {
 	font-size: 90%;
 }
+
 .mailSubject {
 	font-size: 85%;
 	padding-left: 20px;
 }
+
 .mailDate {
 	font-size: 80%;
 	padding-left: 20px;
 }
+
 .selected{
 	font-size: 100%;
 	font-weight: bolder;
@@ -82,10 +80,12 @@ iframe #agenda *{
 	margin-right: auto;
 	margin-left: auto;
 }
+
 #mailModal *{
 	background:black;
 	border: none;
 }
+
 #notificationLogin {
     margin-right: auto;
     margin-left: auto;
@@ -104,8 +104,36 @@ iframe #agenda *{
 #quit{
 	width: 80%;
 	padding: 30px;
+	text-align: center;
 }
 
 .tweetCell{
 	padding:20px;
+	margin-bottom: 5px;
+}
+
+.tweetName{
+	text-align: left;
+	font-size: 90%;
+	font-weight: bolder;
+}
+
+.tweetText{
+	margin-top: 3px;
+	text-align: left;
+	font-size: 105%
+}
+
+.tweetDate{
+	text-align: right;
+	font-size: 95%;
+	margin-top: 5px;
+}
+
+.nothingToShow{
+	width: 80%;
+	padding: 30px;
+	text-align: center;
+    margin-right: auto;
+    margin-left: auto;
 }

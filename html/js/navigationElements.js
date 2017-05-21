@@ -117,7 +117,7 @@ var renderTweets = function(){
 };
 var renderWeather = function(){
 	$.simpleWeather({
-	    location: 'Austin, TX',
+	    location: 'Izmir, Turkey',
 	    woeid: '',
 	    unit: 'C',
 	    success: function(weather) {

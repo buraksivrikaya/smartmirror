@@ -5,12 +5,6 @@ var setNotificationUserName = function(name){
 	$('.notificationElement[data-type="user"]').html(name);
 }
 
-
-var icons='\
-<i class="fa fa-arrow-up" aria-hidden="true"></i>\
-<i class="fa fa-arrow-left" aria-hidden="true"></i>\
-<i class="fa fa-arrow-down" aria-hidden="true"></i>\
-<i class="fa fa-arrow-right" aria-hidden="true"></i>'
 var setGestureDirectionShow = function(dir){
 	if(dir == 'Left'){
 		$('.notificationElement[data-type="gestArrow"]').html('<i class="fa fa-arrow-left" style="display:none" aria-hidden="true"></i>');

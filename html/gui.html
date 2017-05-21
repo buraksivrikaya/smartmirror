@@ -9,26 +9,27 @@
 
     <!-- Bootstrap -->
     <link href="lib/css/bootstrap.min.css" rel="stylesheet">
+    <link href="lib/css/font-awesome.min.css" rel="stylesheet">
+    <link href="lib/css/clock.css" rel="stylesheet">
     <link href="css/gui.css" rel="stylesheet">
-    <link href="css/font-awesome.min.css" rel="stylesheet">
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script>window.$ = window.jQuery = require('jquery');</script>
     <!--<script src="../scripts/gest.min.js"></script> -->
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="lib/js/bootstrap.min.js"></script>
     <script src="lib/js/gest.js"></script>
+    <script src="lib/js/moment.min.js"></script>
+    <script src="lib/js/clock.js"></script>
 
     <script src="js/notificationElements.js"></script>
     <script src="js/navigationElements.js"></script>
     <script src="js/navigation.js"></script>
     <script src="js/notification.js"></script>
-
   </head>
   <body>
     <div id="notificationLogin" style="display: none;"></div>
   <div id="BodyElements" style="display:none">
   	<div id="notificationArea">
-        
       <script>
         $.each(notificationElements, function( key, value ) {
           $("#notificationArea").append(

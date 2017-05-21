@@ -64,6 +64,7 @@ $(document).ready(function () {
 				$("#notificationLogin").fadeOut( "slow", function() {
 					$( "#BodyElements" ).fadeIn("slow", function(){
 						gest.start();
+						startClock();
 					});
 				});
 		    },1000);

@@ -7,7 +7,7 @@ var setNotificationUserName = function(name){
 
 var setGestureDirectionShow = function(dir){
 	if(dir == 'Left'){
-		$('.notificationElement[data-type="gestArrow"]').html('<i class="fa fa-arrow-left" style="display:none" aria-hidden="true"></i>');
+		$('.notificationElement[data-type="gestArrow"]').html('<i class="fa fa-arrow-left" aria-hidden="true"></i>');
 		$('.notificationElement[data-type="gestArrow"]').fadeIn('fast', function(){
 			$(this).fadeOut('slow');
 		});

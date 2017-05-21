@@ -117,6 +117,7 @@ $(document).ready(function () {
 							onMails = 0;
 							onTwits = 0;
 							onQuit = 0;
+							startClock();
 						}
 					}
 					else if (onQuit == 1 && (dir == 'Long down' || dir == 'Down')) {

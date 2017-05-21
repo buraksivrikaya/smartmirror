@@ -38,11 +38,13 @@ var navigationContents = {
 	home : '<div class="contentAreaElement">\
 				<div id="clock" class="dark">\
 					<div class="display">\
-					<div class="weekdays"></div>\
-					<div class="ampm"></div>\
-					<div class="alarm"></div>\
-					<div class="digits"></div>\
+						<div class="weekdays"></div>\
+						<div class="ampm"></div>\
+						<div class="alarm"></div>\
+						<div class="digits"></div>\
+					</div>\
 				</div>\
+				<div id="weather"></div>\
 			</div>',
 
     mails : '<div class="contentAreaElement" hidden>\
@@ -112,4 +114,22 @@ var renderTweets = function(){
 	else{
 		$('#contentArea').html('<div class="nothingToShow"><p>Gösterilecek tweet yok...</p></div>');
 	}
+};
+var renderWeather = function(){
+	$.simpleWeather({
+	    location: 'Austin, TX',
+	    woeid: '',
+	    unit: 'C',
+	    success: function(weather) {
+	      html = '<h2><i class="icon-'+weather.code+'"></i> '+weather.temp+'&deg;'+weather.units.temp+'</h2>';
+	      html += '<ul><li>'+weather.city+', '+weather.region+'</li>';
+	      html += '<li class="currently">'+weather.currently+'</li>';
+	      html += '<li>'+weather.wind.direction+' '+weather.wind.speed+' '+weather.units.speed+'</li></ul>';
+	  
+	      $("#weather").html(html);
+	    },
+	    error: function(error) {
+	      $("#weather").html('<div class="nothingToShow"><p>Hava Durumu getirelemedi. Hata : '+error+'</p></div>');
+	    }
+    });
 };

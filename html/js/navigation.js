@@ -65,6 +65,7 @@ $(document).ready(function () {
 					$( "#BodyElements" ).fadeIn("slow", function(){
 						gest.start();
 						startClock();
+						renderWeather();
 					});
 				});
 		    },1000);
@@ -184,7 +185,12 @@ $(document).ready(function () {
 		});
 
 		$('#contentArea').ready(function(){
-			if($(_self).data("type")=="quit"){
+			if($(_self).data("type")=="home"){
+				$('#weather').ready(function(){
+					renderWeather();
+				});
+			}
+			else if($(_self).data("type")=="quit"){
 				$('#quit').on('click', function(e){
 					e.preventDefault();
 					index = 0;
@@ -201,7 +207,8 @@ $(document).ready(function () {
 			}
 			else if($(_self).data("type")=="twitter"){
 				$('#twitterList').ready(function(){
-					renderTweets();
+					startClock();
+					renderWeather();
 				});
 			}
 			else if($(_self).data("type")=="mails"){

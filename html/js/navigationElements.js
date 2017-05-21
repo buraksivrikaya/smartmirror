@@ -36,6 +36,7 @@ var getNavigationMails = function(mails){
 
 var navigationContents = {
 	home : '<div class="contentAreaElement">\
+				<div id="weather"></div>\
 				<div id="clock" class="dark">\
 					<div class="display">\
 						<div class="weekdays"></div>\
@@ -44,7 +45,6 @@ var navigationContents = {
 						<div class="digits"></div>\
 					</div>\
 				</div>\
-				<div id="weather"></div>\
 			</div>',
 
     mails : '<div class="contentAreaElement" hidden>\

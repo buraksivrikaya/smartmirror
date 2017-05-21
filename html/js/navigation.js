@@ -118,7 +118,6 @@ $(document).ready(function () {
 							onMails = 0;
 							onTwits = 0;
 							onQuit = 0;
-							startClock();
 						}
 					}
 					else if (onQuit == 1 && (dir == 'Long down' || dir == 'Down')) {
@@ -188,6 +187,7 @@ $(document).ready(function () {
 		$('#contentArea').ready(function(){
 			if($(_self).data("type")=="home"){
 				$('#weather').ready(function(){
+					startClock();
 					renderWeather();
 				});
 			}
@@ -208,8 +208,7 @@ $(document).ready(function () {
 			}
 			else if($(_self).data("type")=="twitter"){
 				$('#twitterList').ready(function(){
-					startClock();
-					renderWeather();
+					renderTweets();
 				});
 			}
 			else if($(_self).data("type")=="mails"){

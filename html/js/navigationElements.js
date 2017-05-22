@@ -115,9 +115,9 @@ var renderTweets = function(){
 		$('#contentArea').html('<div class="nothingToShow"><p>Gösterilecek tweet yok...</p></div>');
 	}
 };
-var renderWeather = function(){
+var renderWeather = function(loc){
 	$.simpleWeather({
-	    location: 'Izmir, Turkey',
+	    location: loc,
 	    woeid: '',
 	    unit: 'C',
 	    success: function(weather) {

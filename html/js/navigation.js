@@ -37,45 +37,47 @@ $(document).ready(function () {
 		loggedUser = User.loadFrom("data/" + msg + ".json");
 		console.log(loggedUser);
 		setNotificationUserName(loggedUser.id);
-		if(loggedUser.gmailAuth){
+		if (loggedUser.gmailAuth) {
 			gs = new GmailService(loggedUser);
 			gs.readMail(15).then(setMails);//giriş yaptıktan sonra mailleri çekiyor
 		}
-		if(loggedUser.twitterAuth){
+		if (loggedUser.twitterAuth) {
 			ts = new TwitterService(loggedUser);
 			ts.readTweet(15).then(setTweets);//twitleri çekiyor
 		}
 
 		servicesInterval = setInterval(function () {//her 3 dk da bir mailleri/tweetleri tekrar çekiyor
-			if(loggedUser.gmailAuth){
+			if (loggedUser.gmailAuth) {
 				gs.readMail(15).then(setMails);
 			}
-			if(loggedUser.twitterAuth){
+			if (loggedUser.twitterAuth) {
 				ts.readTweet(15).then(setTweets);
 			}
-		}, 3*60*1000);
+		}, 3 * 60 * 1000);
 
 		faceDetected = 1;
 		FaceUtilAddon.stopListening(); //bunu kaldırırsan surekli dinler
-		    
-	    $("#notificationLogin").html(msg + ' hoşgeldin...');
-	    $("#notificationLogin").fadeIn("slow", function() {
-			window.setTimeout(function(){
-				$("#notificationLogin").fadeOut( "slow", function() {
-					$( "#BodyElements" ).fadeIn("slow", function(){
+
+		$("#notificationLogin").html(msg + ' hoşgeldin...');
+		$("#notificationLogin").fadeIn("slow", function () {
+			window.setTimeout(function () {
+				$("#notificationLogin").fadeOut("slow", function () {
+					$("#BodyElements").fadeIn("slow", function () {
 						gest.start();
 						startClock();
-						renderWeather();
+						$.getJSON("http://www.geoplugin.net/json.gp", function (data) {
+							renderWeather(data["geoplugin_city"] + ", " + data["geoplugin_countryName"]);
+						});
 					});
 				});
-		    },1000);
+			}, 1000);
 		});
 	});
 
 	var canGest = true;
 
 	gest.options.subscribeWithCallback(function (gesture) {
-		if(canGest){
+		if (canGest) {
 			canGest = false;
 			var dir = gesture.direction;
 			setGestureDirectionShow(dir);
@@ -161,7 +163,7 @@ $(document).ready(function () {
 					canGest = true;
 				}, 1000);
 			}
-			else{
+			else {
 				canGest = true;
 			}
 		}
@@ -177,22 +179,24 @@ $(document).ready(function () {
 			this.remove();
 			$($('#contentArea').children(":last")).fadeIn(150), function () {
 				if ($('#contentArea').children().length > 1) {
-					for (var i = 0; i < $('#contentArea').children().length-1; i++) {
+					for (var i = 0; i < $('#contentArea').children().length - 1; i++) {
 						$($('#contentArea').children()[i]).remove();
 					}
 				}
 			};
 		});
 
-		$('#contentArea').ready(function(){
-			if($(_self).data("type")=="home"){
-				$('#weather').ready(function(){
+		$('#contentArea').ready(function () {
+			if ($(_self).data("type") == "home") {
+				$('#weather').ready(function () {
 					startClock();
-					renderWeather();
+					$.getJSON("http://www.geoplugin.net/json.gp", function (data) {
+						renderWeather(data["geoplugin_city"] + ", " + data["geoplugin_countryName"]);
+					});
 				});
 			}
-			else if($(_self).data("type")=="quit"){
-				$('#quit').on('click', function(e){
+			else if ($(_self).data("type") == "quit") {
+				$('#quit').on('click', function (e) {
 					e.preventDefault();
 					index = 0;
 					faceDetected = 0;
@@ -201,19 +205,19 @@ $(document).ready(function () {
 					onQuit = 0;
 					loggedUser = null;
 					clearInterval(servicesInterval);
-					$( "#BodyElements" ).fadeOut("slow", function(){
+					$("#BodyElements").fadeOut("slow", function () {
 						$($('.navigationElement')[index]).click();
 					});
 				});
 			}
-			else if($(_self).data("type")=="twitter"){
-				$('#twitterList').ready(function(){
+			else if ($(_self).data("type") == "twitter") {
+				$('#twitterList').ready(function () {
 					renderTweets();
 				});
 			}
-			else if($(_self).data("type")=="mails"){
+			else if ($(_self).data("type") == "mails") {
 				//gs.readMail(15).then(setMails);
-				if(mailList.length > 0){
+				if (mailList.length > 0) {
 					$($('#mailList')[0]).html(getNavigationMails(mailList)).promise().done(function () {
 						$('.mail').on('click', function () {
 							if (mailReading == 1) {
@@ -231,7 +235,7 @@ $(document).ready(function () {
 						});
 					});
 				}
-				else{
+				else {
 					$('#contentArea').html('<div class="nothingToShow"><p>Gösterilecek e-posta yok...</p></div>');
 				}
 			}

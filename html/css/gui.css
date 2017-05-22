@@ -76,14 +76,28 @@ body{
 }
 
 #mailModal {
+	width: 70%;
 	margin-top: 5%;
 	margin-right: auto;
 	margin-left: auto;
+	color: black;
 }
 
 #mailModal *{
-	background:black;
+	/*background:black;*/
 	border: none;
+}
+#mailModal .modal-dialog{
+	width: 75%;
+}
+
+#mailModal .modal-body-content{
+	max-height: 500px;
+	overflow-y: scroll;
+}
+#mailModal .modal-body-content > *{
+	margin-right: auto;
+	margin-left: auto;
 }
 
 #notificationLogin {

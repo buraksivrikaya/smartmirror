@@ -13,6 +13,7 @@ $(document).ready(function () {
 	var onMailList = 0;
 	var mailReading = 0;
 	var servicesInterval;
+	var scrollAmount = 0;
 	let gs;
 	let ts;
 	let loggedUser;
@@ -77,6 +78,7 @@ $(document).ready(function () {
 	var canGest = true;
 
 	gest.options.subscribeWithCallback(function (gesture) {
+		console.log(gesture.direction);
 		if (canGest) {
 			canGest = false;
 			var dir = gesture.direction;
@@ -127,7 +129,7 @@ $(document).ready(function () {
 						onMails = 0;
 						$('#quit').click();
 					}
-					else if (onMails == 1 && (dir == 'Long down' || dir == 'Down')) {
+					else if (onMails == 1 && (dir == 'Long down' || dir == 'Down') && mailList.length > 0) {
 						onMailList = 1;
 						onMails = 0;
 						if ($('.mail').length > 0) {
@@ -158,7 +160,22 @@ $(document).ready(function () {
 					else if (mailReading == 1 && dir == 'Left') {
 						mailReading = 0;
 						onMailList = 1;
+						scrollAmount = 0;
+						$($('.modal-body-content')[0]).animate({ scrollTop: 0}, "fast");
+						
 						$('#mailModalCloseButton').click();
+					}
+					else if (mailReading == 1 && (dir == 'Long down' || dir == 'Down')) {
+						$($('.modal-body-content')[0]).animate({ scrollTop: scrollAmount += 200 }, "slow");
+						if($('.modal-body-content')[0].scrollHeight < scrollAmount){
+							scrollAmount = $('.modal-body-content')[0].scrollHeight;
+						}
+					}
+					else if (mailReading == 1 && (dir == 'Long up' || dir == 'Up')) {
+						$($('.modal-body-content')[0]).animate({ scrollTop: scrollAmount -= 200 }, "slow");
+						if(scrollAmount < 0){
+							scrollAmount = 0;
+						}
 					}
 					canGest = true;
 				}, 1000);
